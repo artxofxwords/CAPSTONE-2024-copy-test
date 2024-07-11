@@ -4,6 +4,7 @@ import Landing from "./components/main/Landing";
 import Register from "./components/header/Register";
 import Login from "./components/header/Login";
 import About from "./components/main/About";
+import Library from './components/main/Library';
 import Dashboard from "./components/main/Dashboard";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/about" element={<About />} />
+      <Route path="/library" element={<Library />} />
       <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
       </BrowserRouter>
