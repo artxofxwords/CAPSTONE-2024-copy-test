@@ -1,5 +1,4 @@
 import NewUserForm from "../../modals/NewUserForm";
-import NewProposalForm from "../../modals/NewProposalForm";
 
 export default function Register(isLoggedIn) {
   let newUserFormDisplay;
@@ -26,9 +25,7 @@ export default function Register(isLoggedIn) {
         >
           <NewUserForm />
         </div>
-
-        {isLoggedIn && (<NewProposalForm />)}
-      </div>
+        </div>
     </>
   );
 }
