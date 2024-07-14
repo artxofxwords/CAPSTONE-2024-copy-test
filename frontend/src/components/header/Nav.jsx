@@ -6,7 +6,7 @@ export default function Nav () {
     return (
         <div style={{
             width: "95vw",
-            height: "5vh",
+            height: "10vh",
             backgroundColor: "lightgray",
             alignContent: "center",
             textAlign: "right"
@@ -15,6 +15,36 @@ export default function Nav () {
                 display: "inline-flex",
                 flexDirection: "row"
             }}>
+                <button
+                type="click"
+                onClick={() => navigate('/about')}
+                style={{
+                    display: "flex",
+                    backgroundColor: "white",
+                    color: "black",
+                    border: "0px",
+                    borderRadius: "8px",
+                    marginRight: "15px",
+                    padding: "5px"
+                }}
+                >
+                    Learn More About the Dev Team
+                </button>
+                <button 
+                type="click"
+                onClick={() => navigate('/proposal')}
+                style={{
+                    display: "flex",
+                    backgroundColor: "white",
+                    color: "black",
+                    border: "0px",
+                    borderRadius: "8px",
+                    marginRight: "15px",
+                    padding: "5px"
+                }}
+                >
+                    Submit a Proposal
+                </button>
                 <button 
                 type="click"
                 onClick={() => navigate('/register')}
@@ -24,10 +54,11 @@ export default function Nav () {
                     color: "black",
                     border: "0px",
                     borderRadius: "8px",
-                    marginRight: "5px"
+                    marginRight: "15px",
+                    padding: "5px"
                 }}
                 >
-                    Register & Submit Proposal
+                    Register as New User
                 </button>
                 <button
                 type="click"
@@ -38,7 +69,8 @@ export default function Nav () {
                     color: "black",
                     border: "0px",
                     borderRadius: "8px",
-                    marginRight: "5px"
+                    marginRight: "15px",
+                    padding: "5px"
                 }}
                 >
                     Login

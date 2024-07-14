@@ -1,18 +1,31 @@
-export default function Register() {
+import NewUserForm from "../../modals/NewUserForm";
+
+export default function Register(isLoggedIn) {
+  let newUserFormDisplay;
+
+  if (isLoggedIn) {
+    newUserFormDisplay = "none";
+  } else {
+    newUserFormDisplay = "inline";
+  }
+
   return (
     <>
       <div
         style={{
-          width: "95vw",
+          width: "45vw",
           height: "80vh",
-          backgroundColor: "gray",
-          color: "white",
-          textAlign: "center",
-          alignContent: "center",
+          margin: "15px",
         }}
       >
-        <p>This is where user registers.</p>
-      </div>
+        <div
+          style={{
+            display: { newUserFormDisplay },
+          }}
+        >
+          <NewUserForm />
+        </div>
+        </div>
     </>
   );
 }
