@@ -10,7 +10,7 @@ exports.loginUser = async (req, res) => {
 
     const userFound = await user.findOne({ username: username });
 
-    const hashedPasswordFromUser = userFound.passwordl
+    const hashedPasswordFromUser = userFound.password
 
     bcrypt.compare(password, hashedPasswordFromUser, (err, result) => {
         if (result) {
@@ -31,15 +31,15 @@ exports.loginUser = async (req, res) => {
 // register user controller
 exports.registerUser = async (req, res) => {
     const saltRounds = 10;
-    const { username, password, firstName, lastName, email, companyName, city, state } = req.body;
+    const { username, password, firstName, lastName, email, companyName, city, state, company } = req.body;
     let isAdmin = false;
-
+    console.log(username)
     if (email.includes(process.env.admin)) {
         isAdmin = true;
     }
 
     bcrypt.hash(password, saltRounds, async (err, hash) => {
-        const newUser = new user({ username: username, password: hash, firstName: firstName, lastName: lastName, email: email, isAdmin: isAdmin })
+        const newUser = new user({ username: username, password: hash, firstName: firstName, lastName: lastName, email: email, companyName: companyName, city: city, state: state, isAdmin: isAdmin, company: company })
     
         try {
             await newUser.save();
