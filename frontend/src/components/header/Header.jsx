@@ -45,8 +45,9 @@ export default function Header() {
             >
               Words words words
             </p>
-            <button
+            <button><a
             href="https://www.uprighted.com/courses"
+            target="_blank"
               style={{
                 backgroundColor: "lightgray",
                 color: "black",
@@ -55,7 +56,7 @@ export default function Header() {
               }}
             >
               Learn more about Upright tech bootcamps!
-            </button>
+            </a></button>
           </div>
           <div style={{
             display: "flex",

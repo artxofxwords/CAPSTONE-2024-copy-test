@@ -7,6 +7,27 @@ export default function NewProposalForm(isLoggedIn) {
     pleaseSignIn = <h2></h2>
   }
 
+// companyName    
+// website    
+// projectStarted (true/false)    
+// proposition
+// techRequirements    
+// availabilityStart    
+// availabilityEnd    
+// contact
+
+// category (true/false)
+// category.cohort (true/false)
+// read (true/false)
+// approvedStatus (true/false)
+// underReviewStatus (true/false)
+// submittedStatus (true/false)
+// deniedStatus (true/false)
+// ongoingStatus (true/false)
+// owner
+// _id
+
+
   return (
     <>
     {pleaseSignIn}
@@ -28,20 +49,38 @@ export default function NewProposalForm(isLoggedIn) {
             <form className="space-y-4 md:space-y-6" action="#">
               <div>
                 <label
-                  htmlFor="Company name (if applicable)"
+                  htmlFor="Company name"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Company Name
+                  Company Name (if applicable)
                 </label>
                 <input
                   type="companyName"
                   name="companyName"
                   id="companyName"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="your company name"
+                  placeholder="Your company name"
                   required="false"
                 />
               </div>
+
+              <div>
+                <label
+                  htmlFor="Company website"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Company Website (if applicable)
+                </label>
+                <input
+                  type="companyWebsite"
+                  name="companyWebsite"
+                  id="companyWebsite"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Your company website"
+                  required="false"
+                />
+              </div>
+
               <div>
                 <label
                   htmlFor="projectProposition"
@@ -55,7 +94,7 @@ export default function NewProposalForm(isLoggedIn) {
               <div className="flex items-start">
                 <div className="flex items-center h-5">
                   <input
-                    id="terms"
+                    id="projectStarted"
                     aria-describedby="terms"
                     type="checkbox"
                     className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
@@ -72,6 +111,10 @@ export default function NewProposalForm(isLoggedIn) {
                 </div>
               </div>
 
+              <label htmlFor="availableDates" 
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    What is your availability to sponsor this project for a capstone cohort?
+                  </label>
               <div id="date-range-picker" className="flex items-center">
                 <div className="relative">
                   <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -116,9 +159,45 @@ export default function NewProposalForm(isLoggedIn) {
                 </div>
               </div>
 
+              <div>
+                <label
+                  htmlFor="Company website"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Project Technologies used or preferred
+                </label>
+                <input
+                  type="techRequirements"
+                  name="techRequirements"
+                  id="techRequirements"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Tech or software requirements"
+                  required="false"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="Company website"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  The best contact for this proposal (enter a phone number or email)
+                </label>
+                <input
+                  type="contact"
+                  name="contact"
+                  id="contact"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Contact info"
+                  required="true"
+                />
+              </div>
+
+
+
               <button
                 type="submit"
-                className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="w-full text-black bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
                 Submit your proposal
               </button>
