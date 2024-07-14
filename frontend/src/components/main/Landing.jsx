@@ -5,7 +5,9 @@ export default function Landing () {
 
 
     return (
-        <div>
+        <div style={{
+            marginLeft: "25px"
+        }}>
             <Header />
 
             <Carousal />
