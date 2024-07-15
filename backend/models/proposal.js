@@ -79,3 +79,5 @@ const proposalSchema = new mongoose.Schema({
         requried: true
     }
 });
+
+module.exports = mongoose.model("Proposal", proposalSchema);
