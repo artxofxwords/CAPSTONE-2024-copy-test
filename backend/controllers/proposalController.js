@@ -1,15 +1,17 @@
 // Import the schema needed
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const Proposal = require("../models/proposal");
 
 exports.displayAllProposal = async (req, res) => {
-    const yourJWTtoken = localStorage.getItem("token");
+    // const yourJWTtoken = localStorage.getItem("token");
 
     try {
 
-       const allProposals = await Proposal.find();
+        const allProposals = await Proposal.find();
         console.log("AllProposals", allProposals);
             } catch (err) {
-   
             console.log("Could not get proposal");
             res.status(500).json("Error: Could not get proposal");
         }
