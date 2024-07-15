@@ -2,52 +2,24 @@
 const Proposal = require("../models/proposal");
 
 exports.displayAllProposal = async (req, res) => {
-    const token = req.headers["authorization"];
-    let verified, allProposals = [];
-    const proposalId = req.params.proposalId;
-    console.log(proposalId);
+    const yourJWTtoken = localStorage.getItem("token");
 
     try {
 
-        verified = jwt.verify(token, process.env.SECRET_KEY);
-
-        if (verified) {
-        console.log(`Token Verified: ${verified}`);
-        allProposals = await Proposal.find();
+       const allProposals = await Proposal.find();
         console.log("AllProposals", allProposals);
-            }
-
-    } catch (err) {
-        if (!verified) {
-
-            console.log(`Token Not Verified: ${verified}`);
-            console.lolg(`Error Message: ${err.message}`);
-            res.status(403).json("Token couldn't be verified");
-        } else {
-            console.log(err);
+            } catch (err) {
+   
             console.log("Could not get proposal");
             res.status(500).json("Error: Could not get proposal");
         }
-    }
-}
-
+};
 
 exports.displayProposal = async (req, res) => {
-    const token = req.headers["authorization"];
-    let verified;
-    const proposalId = req.params.proposalId;
-    console.log(proposalId);
 
     try {
 
-        verified = jwt.verify(token, process.env.SECRET_KEY);
-
-        if (verified) {
-            let newUser = "";
-            let newProposal = {};
-
-        console.log(`Token Verified: ${verified}`);
-        let allProposals = await Proposal.find({proposalId: proposalId});
+        const allProposals = await Proposal.find({proposalId: proposalId});
         for (let proposal in allProposals) {
             console.log(allProposals[proposal]);
             newUser = await User.findById({_id: allProposals[proposal].user_id});
@@ -59,21 +31,12 @@ exports.displayProposal = async (req, res) => {
         }
         console.log(`${allProposals}`);
         res.status(200).json(allProposals);
-            }
-
-    } catch (err) {
-        if (!verified) {
-
-            console.log(`Token Not Verified: ${verified}`);
-            console.lolg(`Error Message: ${err.message}`);
-            res.status(403).json("Token couldn't be verified");
-        } else {
+            } catch (err) {
             console.log(err);
             console.log("Could not get proposal");
             res.status(500).json("Error: Could not get proposal");
         }
     }
-}
 
 exports.createProposal = async (req, res) => {
     const companyName = req.body.companyName
@@ -86,52 +49,27 @@ exports.createProposal = async (req, res) => {
     const contact = req.body.contact
     const owner = req.body.owner;
 
-    let verified;
-
     try {
-
-        verified = jwt.verify(token, process.env.SECRET_KEY);
-
-        if (verified) {
-            
-            const userID = verified.userId;
-            let userInfo = await User.findById(userId);
-
-            let user = `${userInfo.firstName} ${userInfo.lastName}`
 
             const newProposal = new Proposal({companyName: companyName, website: website, projectStarted: projectStarted, proposition: proposition, techRequirements: techRequirements,
                 availabilityStart: availabilityStart, availabilityEnd: availabilityEnd, contact: contact, owner: owner});
 
-                console.log(`Token Verified: ${verified}`);
                 console.log(`Proposal Submitted: ${newProposal}`);
                 const test = await newProposal.save();
                 console.log("New Proposal", test);
 
                 res.status(201).json("Proposal Submitted!")
-        }
-
-    } catch (err) {
-
-        if (!verified) {
-            console.log(`Token Not Verified: ${verified}`);
-            console.log(`Error Message: ${err.message}`);
-            res.status(403).json("Token could not be berified");
-        } else {
+        } catch (err)  {
             console.log("err", err);
             console.log("Something went wrong. Proposal could not be created");
             res.status(500).json("Error: Something went wrong. Proposal could not be created");
         }
     }
-}
+
 
 exports.updateProposal = async (req, res) => {
-    const token = req.headers["authorization"];
-    let verified;
 
     try {
-        verified = jwt.verify(token, process.env.SECRET_KEY);
-
-        if (verified && userFound) {
 
             const replacingProposal = {
                 companyName: req.body.companyName,
@@ -148,20 +86,11 @@ exports.updateProposal = async (req, res) => {
             await Proposal.findOneAndUpdate({_id: req.params.id}, replacingProposal);
 
             res.status(201).json(replacingProposal);
-        }
-    } catch (err) {
-
-        if (!verified) {
-
-            console.log(`Token Not Verified: ${verified}`);
-            console.log(`Error Message: ${err.message}`);
-            res.status(503).json(`Incorrect Id. Cannot edit proposal`)
-        } else {
+        } catch (err) {
             console.log("Something went wrong. Could not update proposal");
             res.status(500).json("Error: Something went wrong. Could not update proposal");
         }
-    }
-};
+    };
 
 exports.deleteProposal = async (req, res) => {
     try {
