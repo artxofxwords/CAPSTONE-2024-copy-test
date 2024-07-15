@@ -1,8 +1,6 @@
-import { useNavigate } from "react-router-dom";
 import Nav from "./Nav.jsx";
 
 export default function Header() {
-    const navigate = useNavigate();
     
   return (
     <>
@@ -13,7 +11,7 @@ export default function Header() {
         display: "inline-flex",
         justifyContent: "center",
         flexDirection: "row",
-        backgroundColor: "gray",
+        backgroundColor:"darkcyan",
         width: "95vw",
         height: "40vh",
         }}
@@ -33,7 +31,7 @@ export default function Header() {
             <h1
               style={{
                 color: "white",
-                fontSize: "38px",
+                fontSize: "60px",
               }}
             >
               Headline
@@ -41,12 +39,15 @@ export default function Header() {
             <p
               style={{
                 color: "white",
+                fontSize: "18px",
+                marginBottom: "14px"
               }}
             >
               Words words words
             </p>
-            <button
-            onClick={() => navigate("/about")}
+            <button><a
+            href="https://www.uprighted.com/courses"
+            target="_blank"
               style={{
                 backgroundColor: "lightgray",
                 color: "black",
@@ -54,8 +55,8 @@ export default function Header() {
                 borderRadius: "8px"
               }}
             >
-              About the dev team
-            </button>
+              Learn more about Upright tech bootcamps!
+            </a></button>
           </div>
           <div style={{
             display: "flex",
