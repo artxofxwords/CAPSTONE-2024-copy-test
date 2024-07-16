@@ -1,15 +1,17 @@
 // Import the schema needed
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const Proposal = require("../models/proposal");
 
 exports.displayAllProposal = async (req, res) => {
-    const yourJWTtoken = localStorage.getItem("token");
+    // const yourJWTtoken = localStorage.getItem("token");
 
     try {
-
-       const allProposals = await Proposal.find();
+        const allProposals = await Proposal.find();
         console.log("AllProposals", allProposals);
+            res.status(200).json(allProposals)
             } catch (err) {
-   
             console.log("Could not get proposal");
             res.status(500).json("Error: Could not get proposal");
         }
@@ -18,17 +20,18 @@ exports.displayAllProposal = async (req, res) => {
 exports.displayProposal = async (req, res) => {
 
     try {
-
-        const allProposals = await Proposal.find({proposalId: proposalId});
-        for (let proposal in allProposals) {
-            console.log(allProposals[proposal]);
-            newUser = await User.findById({_id: allProposals[proposal].user_id});
-            newProposal = {_id: allProposals[proposal]._id, user_id, companyName: allProposals[proposal].companyName, website: allProposals[proposal].website, projectStarted: allProposals[proposal].projectStarted,
-                proposition: allProposals[proposal].proposition, techRequirements: allProposals[proposal].techRequirements, availabilityStart: allProposals[proposal].availabilityStart, availabilityEnd: allProposals[proposal].availabilityEnd,
-                contact: allProposals[proposal].contact, owner: allProposals[proposal].owner}
-            console.log(`Proposals to appear`, newProposal);
-            allProposals.push(newProposal);
-        }
+        console.log(req.params)
+        // const proposalId = req.params._id
+        const allProposals = await Proposal.findOne({_id: req.params._id});
+        // for (let proposal in allProposals) {
+            // console.log(allProposals[proposal]);
+            // let newUser = await User.findById({_id: allProposals[proposal].user_id});
+            // let newProposal = {_id: allProposals[proposal]._id, companyName: allProposals[proposal].companyName, website: allProposals[proposal].website, projectStarted: allProposals[proposal].projectStarted,
+            //     proposition: allProposals[proposal].proposition, techRequirements: allProposals[proposal].techRequirements, availabilityStart: allProposals[proposal].availabilityStart, availabilityEnd: allProposals[proposal].availabilityEnd,
+            //     contact: allProposals[proposal].contact, owner: allProposals[proposal].owner}
+            // console.log(`Proposals to appear`, newProposal);
+            // allProposals.push(newProposal);
+        // }
         console.log(`${allProposals}`);
         res.status(200).json(allProposals);
             } catch (err) {
@@ -48,6 +51,7 @@ exports.createProposal = async (req, res) => {
     const availabilityEnd = req.body.availabilityEnd
     const contact = req.body.contact
     const owner = req.body.owner;
+    const proposalId = req.body._id
 
     try {
 
@@ -83,7 +87,7 @@ exports.updateProposal = async (req, res) => {
                 owner: req.body.owner
             }
 
-            await Proposal.findOneAndUpdate({_id: req.params.id}, replacingProposal);
+            await Proposal.findOneAndUpdate({_id: req.params._id}, replacingProposal);
 
             res.status(201).json(replacingProposal);
         } catch (err) {
@@ -94,7 +98,7 @@ exports.updateProposal = async (req, res) => {
 
 exports.deleteProposal = async (req, res) => {
     try {
-        await Proposal.findByIdAndDelete(req.params.id);
+        await Proposal.findByIdAndDelete(req.params._id);
         res.status(200).json(`Proposal removed`)
 
     } catch (err) {
