@@ -8,6 +8,7 @@ import NewProposalForm from "./modals/NewProposalForm";
 import About from "./components/main/About";
 import Library from './components/main/Library';
 import Dashboard from "./components/main/Dashboard";
+import ControlPanel from "./components/main/ControlPanel";
 
 function App() {
   //useState variables
@@ -37,6 +38,7 @@ function App() {
       <Route path="/about" element={<About />} />
       <Route path="/library" element={<Library />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/controlpanel" element={<ControlPanel />} />
       </Routes>
       </BrowserRouter>
     </>
