@@ -12,6 +12,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
 mongoose.connect("mongodb+srv://TyBenedict:llKoNQRH5vYE712P@capstone.us3iibp.mongodb.net/Capstone");
+
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "Connection Error."));
 db.once("open", () => {
