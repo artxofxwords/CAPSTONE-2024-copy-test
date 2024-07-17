@@ -66,7 +66,7 @@ exports.deleteUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         const changeUser = new UserActivation({
-            _id: req.params.id,
+            _id: req.params._id,
             username: req.body.username,
             password: req.body.password,
             email: req.body.username,
@@ -77,7 +77,7 @@ exports.updateUser = async (req, res) => {
             state: req.body.state
         })
 
-        await user.findOneAndUpdate({ _id: req.params.id }, changeUser)
+        await user.findOneAndUpdate({ _id: req.params._id }, changeUser)
 
         res.status(200).json("User Updated!")
     } catch (err) {
@@ -93,5 +93,15 @@ exports.getAllUsers = async (req, res) => {
         res.status(200).json(user)
     } catch (err) {
         res.status(500).json("Could not get all users!")
+    }
+};
+
+exports.getUserById = async (req, res) => {
+    try {
+        const data = await user.findById(req.params._id);
+        
+        res.status(200).json(data)
+    } catch (err) {
+        res.status(500).json("Could not find user!")
     }
 };

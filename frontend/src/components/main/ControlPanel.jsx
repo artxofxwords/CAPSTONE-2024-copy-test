@@ -4,7 +4,9 @@ export default function ControlPanel() {
   //useState variables
   const [allProposals, setAllProposals] = useState([]); //list of all proposals from database
   const [unreadProposals, setUnreadProposals] = useState([]); //list of all unread proposals based on "read = true or false"
+  const [priorityProposals, setPriorityProposals] = useState([]); //list of top five proposals sorted by sponser availability date
   const [currentProposal, setCurrentProposal] = useState(); //clicked proposal, fetches by id to display details
+  const [currentProposalOwnerInfo, setCurrentProposalOwnerInfo] = useState([]); //sponsor info for selected proposal
 
   //useEffect functions
   useEffect(() => {
@@ -12,20 +14,28 @@ export default function ControlPanel() {
   }, []);
 
   useEffect(() => {
-    allUnreadProposals(); //watched allProposals list for changes and refreshes unread list
+    allUnreadProposals(); //rerenders unread list
   }, [allProposals]);
 
   useEffect(() => {
-    handleProposalClick(); //updates current selected proposals as they are clicked on
+    sortProposalsByPriority(); //rerenders priority list
+  }, [allProposals]);
+
+  useEffect(() => {
+    if (currentProposal) {
+      getOwnerInfo(); //renders sponsor info who submitted selected proposal
+    }
   }, [currentProposal]);
 
+  //functions
+  //fetches all proposals
   async function getAllProposals() {
     const response = await fetch(
       `http://localhost:3000/proposals/displayAllProposal`
     );
 
     const data = await response.json();
-    console.log(data);
+    console.log("all proposals fetched: ", data);
     setAllProposals(data);
 
     allUnreadProposals();
@@ -41,7 +51,7 @@ export default function ControlPanel() {
           unreadProposalsList.push(item);
         }
       }
-      console.log(unreadProposalsList);
+      console.log("unread proposals list: ", unreadProposalsList);
       setUnreadProposals(unreadProposalsList);
     } catch (err) {
       console.log(err);
@@ -49,6 +59,14 @@ export default function ControlPanel() {
   }
 
   //const topPriorityProposals = fetch list of proposals sorted by available date
+  async function sortProposalsByPriority () {
+    const sortedProposals = allProposals.sort((a, b) => new Intl.DateTimeFormat('en-US').format(new Date(b.availabilityStart)) - new Intl.DateTimeFormat('en-US').format(new Date(a.availabilityStart)));
+
+    console.log("sorted priority proposals: ", sortedProposals);
+    sortedProposals.splice(5);
+
+    setPriorityProposals(sortedProposals);
+  }
 
   //const pendingReviewProposals = fetch list of proposals with status pending
 
@@ -60,16 +78,31 @@ export default function ControlPanel() {
     console.log(proposal);
   }
 
+  //once currentProposal is set, specific proposal things...
   let projectInProgress;
 
   if (currentProposal) {
     if (currentProposal.projectStarted) {
-      projectInProgress = <p>Project is already underway.</p>;
+      projectInProgress = <span>Project is already underway.</span>;
     } else {
-      projectInProgress = <p>Project is not started.</p>;
+      projectInProgress = <span>Project is not started.</span>;
     }
   }
 
+  //pulls info of sponser who submitted proposal through owner id
+  async function getOwnerInfo () {
+    const _id = currentProposal.owner;
+    console.log("owner id: ", currentProposal.owner);
+
+    const response = await fetch(`http://localhost:3000/users/${_id}`);
+    
+    const data = await response.json();
+    console.log("owner info: ", data);
+
+    setCurrentProposalOwnerInfo(data);
+  }
+
+  //handles user click on mark proposal as read
   async function handleMarkAsReadProposal(e) {
     e.preventDefault();
 
@@ -93,19 +126,42 @@ export default function ControlPanel() {
     getAllProposals();
   }
 
+  //handles user changing proposal status
+  async function handleStatusChange (e) {
+    e.preventDefault();
+
+    if (e.target.checked) {
+      const statusToChange = e.target.id.value;
+
+      const body = { statusToChange: true }
+
+      const response = await fetch(`http://localhost:3000/proposals/displayProposal/${currentProposal._id}`, {
+        method: "PUT",
+        body: JSON.stringify(body),
+        headers: {
+          "Content-type": "application/json",
+          // "Authorization": `Bearer ${yourJwtToken}`
+        },
+      })
+
+      const data = await response.json();
+      console.log("updated proposal status: ", data);
+    }
+  }
+
   return (
     <>
       <div
         style={{
-          marginLeft: "25px",
+          marginLeft: "25px"
         }}
       >
         <h1
           style={{
-            fontSize: "60px",
+            fontSize: "60px"
           }}
         >
-          Welcome!
+          Welcome admin!
         </h1>
       </div>
       <div
@@ -155,21 +211,21 @@ export default function ControlPanel() {
         >
           <a className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Most Urgent Proposals
+              Priority Proposals
             </h5>
-            <ul className="w-98 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-              <li className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                Proposal for ..date..
-              </li>
-              <li className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
-                Proposal for ..date..
-              </li>
-              <li className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
-                Proposal for ..date..
-              </li>
-              <li className="w-full px-4 py-2 rounded-b-lg">
-                Proposal for ..date..
-              </li>
+
+            <ul className="w-98 text-med font-bold text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+              {priorityProposals?.map((proposal) => (
+                <li
+                  key={proposal._id}
+                  onClick={(e) => {
+                    handleProposalClick(e, proposal);
+                  }}
+                  className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600"
+                >
+                  {proposal.companyName} - {proposal.availabilityStart}
+                </li>
+              ))}
             </ul>
           </a>
         </div>
@@ -269,13 +325,16 @@ export default function ControlPanel() {
           <a className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
             <div
               style={{
-                display: "inline-flex",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "baseline"
               }}
             >
               <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
                 {currentProposal.companyName}
                 </h1>
-              <p style={{
+              <span style={{
+                display: "flex",
                 marginLeft: "40px"
               }}>
                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -284,30 +343,33 @@ export default function ControlPanel() {
               </h5>
               <button
                 style={{
-                  display: "inline-flex",
                   marginLeft: "25px",
                 }}
                 onClick={(e) => {
                   handleMarkAsReadProposal(e);
                 }}
-              ><svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              ><svg className="inline w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
               <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8m18 0-8.029-4.46a2 2 0 0 0-1.942 0L3 8m18 0-9 6.5L3 8"/>
             </svg>
             
-            
                 Mark As Read
               </button>
-              </p>
+              </span>
             </div>
+
 
             <div
               style={{
                 display: "inline-flex",
-                position: "relative",
+                flexDirection: "column",
+                columnGap: "20px",
                 float: "right",
-                marginLeft: "10px",
+                marginTop: "20px"
               }}
             >
+            <div style={{
+              display: "flex"
+            }}>
               <svg
                     className="w-6 h-6 text-gray-800 dark:text-white"
                     aria-hidden="true"
@@ -343,7 +405,7 @@ export default function ControlPanel() {
                     disabled
                   />
                   <label
-                    htmlFor="option-disabled"
+                    htmlFor="submitted"
                     className="block ms-2 text-sm font-medium text-gray-300 dark:text-gray-700"
                   >
                     Submitted
@@ -352,15 +414,16 @@ export default function ControlPanel() {
 
                 <div className="flex items-center mb-4">
                   <input
-                    id="country-option-1"
+                    id="underReviewStatus"
                     type="radio"
                     name="underReview"
-                    value="underReview"
+                    value="underReviewStatus"
                     className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
                     checked
+                    onChange={(e) => {handleStatusChange(e)}}
                   />
                   <label
-                    htmlFor="country-option-1"
+                    htmlFor="underReview"
                     className="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300"
                   >
                     Under Review
@@ -416,14 +479,133 @@ export default function ControlPanel() {
                 </div>
               </fieldset>
             </div>
+            </div>
+
             <div>
-              <p className="mb-3 text-lg text-gray-500 md:text-xl dark:text-gray-400"></p>
-              <p className="mb-3 text-lg text-gray-500 md:text-xl dark:text-gray-400">{currentProposal.website}</p>
-              <p className="mb-3 text-lg text-gray-500 md:text-xl dark:text-gray-400">{currentProposal.contact}</p>
+            <fieldset>
+                <legend>
+                  <p style={{
+                    display: "inline-flex",
+                    marginBottom: "8px"
+                  }}>
+                    Assign Category
+                    </p>
+                </legend>
+
+                <div className="flex items-center mb-4">
+                  <input
+                    id="unassigned"
+                    type="radio"
+                    name="unassigned"
+                    value="unassigned"
+                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                    checked
+                  />
+                  <label
+                    htmlFor="unassigned"
+                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    No category assigned
+                  </label>
+                </div>
+
+                <div className="flex items-center mb-4">
+                  <input
+                    id="softDev"
+                    type="radio"
+                    name="softDev"
+                    value="softDev"
+                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label
+                    htmlFor="softDev"
+                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    Software Development
+                  </label>
+                </div>
+
+                <div className="flex items-center mb-4">
+                  <input
+                    id="digMark"
+                    type="radio"
+                    name="digMark"
+                    value="digMark"
+                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label
+                    htmlFor="digMark"
+                    className="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    Digital Marketing
+                  </label>
+                </div>
+
+                <div className="flex items-center mb-4">
+                  <input
+                    id="datAn"
+                    type="radio"
+                    name="datAn"
+                    value="datAn"
+                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label
+                    htmlFor="datAn"
+                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    Data Analytics
+                  </label>
+                </div>
+
+                <div className="flex items-center mb-4">
+                  <input
+                    id="uxUi"
+                    type="radio"
+                    name="uxUi"
+                    value="uxUi"
+                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label
+                    htmlFor="uxUi"
+                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    UX/UI
+                  </label>
+                </div>
+
+                <div className="flex items-center mb-4">
+                  <input
+                    id="all"
+                    type="radio"
+                    name="all"
+                    value="all"
+                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus-ring-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label
+                    htmlFor="all"
+                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    All Categories
+                  </label>
+                </div>
+              </fieldset>
+              </div>
+
+
+            <div style={{
+              height: "200vh",
+              marginLeft: "40px"
+            }}>
+              <p className="mb-3 text-lg text-gray-500 md:text-xl dark:text-gray-400">Submitted by: {currentProposalOwnerInfo.firstName}{" "}{currentProposalOwnerInfo.lastName}</p>
+              <p className="mb-3 text-lg text-gray-500 md:text-xl dark:text-gray-400">Website: <a href={currentProposal.website} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">{currentProposal.website}</a></p>
+              <p className="mb-3 text-lg text-gray-500 md:text-xl dark:text-gray-400">Preferred contact: {currentProposal.contact}</p>
+              <p className="mb-3 text-lg text-gray-500 md:text-xl dark:text-gray-400">Location: {currentProposalOwnerInfo.city}, {currentProposalOwnerInfo.state}</p> 
               <p className="text-gray-500 dark:text-gray-400">{currentProposal.proposition}</p>
-              <p className="text-gray-500 dark:text-gray-400">{currentProposal.techRequirements}</p>
+              <p className="text-gray-500 dark:text-gray-400">Tech: {currentProposal.techRequirements}</p>
               <p className="text-gray-500 dark:text-gray-400">{projectInProgress}</p>
             </div>
+
+            
           </a>
         </div>
       )}
