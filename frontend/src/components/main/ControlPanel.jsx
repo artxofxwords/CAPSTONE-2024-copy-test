@@ -1,12 +1,26 @@
 import { useState, useEffect } from "react";
 
 export default function ControlPanel() {
+  //const yourJwtToken = localStorage.getItem("token");
+
   //useState variables
   const [allProposals, setAllProposals] = useState([]); //list of all proposals from database
   const [unreadProposals, setUnreadProposals] = useState([]); //list of all unread proposals based on "read = true or false"
   const [priorityProposals, setPriorityProposals] = useState([]); //list of top five proposals sorted by sponser availability date
   const [currentProposal, setCurrentProposal] = useState(); //clicked proposal, fetches by id to display details
   const [currentProposalOwnerInfo, setCurrentProposalOwnerInfo] = useState([]); //sponsor info for selected proposal
+
+  const [readProposal, setReadProposal] = useState(false); //mark as read once reviewed
+  const [statusUnderReview, setStatusUnderReview] = useState(false); //mark under review once proposal is opened
+  const [statusOngoing, setStatusOngoing] = useState(false); //mark ongoing once contact made
+  const [statusApproved, setStatusApproved] = useState(false); //mark approved once ready to assign to cohort
+  const [statusDenied, setStatusDenied] = useState(false); //mark denied to remove from view
+
+  // const [noCategory, setNoCategory] = useState(true);
+  // const [categorySoftwareDevelopment, setCategorySoftwareDevelopment] = useState(false); 
+  // const [categoryDataAnalysis, setCategoryDataAnalysis] = useState(false);
+  // const [categoryUxUi, setCategoryUxUi] = useState(false);
+  // const [categoryDigitalMarketing, setCategoryDigitalMarketing] = useState(false);
 
   //useEffect functions
   useEffect(() => {
@@ -60,15 +74,13 @@ export default function ControlPanel() {
 
   //const topPriorityProposals = fetch list of proposals sorted by available date
   async function sortProposalsByPriority () {
-    const sortedProposals = allProposals.sort((a, b) => new Intl.DateTimeFormat('en-US').format(new Date(b.availabilityStart)) - new Intl.DateTimeFormat('en-US').format(new Date(a.availabilityStart)));
+    const sortedProposals = allProposals.sort((a, b) => new Date(a.availabilityStart) - new Date(b.availabilityStart));
 
     console.log("sorted priority proposals: ", sortedProposals);
     sortedProposals.splice(5);
 
     setPriorityProposals(sortedProposals);
   }
-
-  //const pendingReviewProposals = fetch list of proposals with status pending
 
   //onClick of any project in various lists, proposal appears in 'Project Detail View' with project details
   async function handleProposalClick(e, proposal) {
@@ -121,33 +133,65 @@ export default function ControlPanel() {
     );
 
     const data = await response.json();
+
+    setReadProposal(!readProposal);
     console.log("Proposal marked as read.", data);
 
     getAllProposals();
   }
 
-  //handles user changing proposal status
-  async function handleStatusChange (e) {
+  //functions for state variables to hold admin selections until "save changes" is clicked for put request
+  function handleStatusUnderReview (e) {
     e.preventDefault();
 
-    if (e.target.checked) {
-      const statusToChange = e.target.id.value;
-
-      const body = { statusToChange: true }
-
-      const response = await fetch(`http://localhost:3000/proposals/displayProposal/${currentProposal._id}`, {
-        method: "PUT",
-        body: JSON.stringify(body),
-        headers: {
-          "Content-type": "application/json",
-          // "Authorization": `Bearer ${yourJwtToken}`
-        },
-      })
-
-      const data = await response.json();
-      console.log("updated proposal status: ", data);
-    }
+    setStatusUnderReview(!statusUnderReview);
   }
+
+  function handleStatusOngoing (e) {
+    e.preventDefault();
+
+    setStatusOngoing(!statusOngoing);
+  }
+
+  function handleStatusApproved (e) {
+    e.preventDefault();
+
+    setStatusApproved(!statusApproved);
+  }
+
+  function handleStatusDenied (e) {
+    e.preventDefault();
+
+    setStatusDenied(!statusDenied);
+  }
+  
+
+//handles admin saving all state variables to database
+async function handleSaveAllProposalChanges (e) {
+  e.preventDefault();
+
+    const body = {
+      read: readProposal,
+      approvedStatus: statusApproved,
+      underReviewStatus: statusUnderReview,
+      deniedStatus: statusDenied,
+      ongoingStatus: statusOngoing
+    }
+
+
+    const response = await fetch(`http://localhost:3000/proposals/displayProposal/${currentProposal._id}`, {
+      method: "PUT",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-type": "application/json",
+        // "Authorization": `Bearer ${yourJwtToken}`
+      },
+    })
+
+    const data = await response.json();
+    console.log("updated proposal status: ", data);
+  }
+
 
   return (
     <>
@@ -419,8 +463,7 @@ export default function ControlPanel() {
                     name="underReview"
                     value="underReviewStatus"
                     className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                    checked
-                    onChange={(e) => {handleStatusChange(e)}}
+                    onChange={(e) => {handleStatusUnderReview(e)}}
                   />
                   <label
                     htmlFor="underReview"
@@ -437,6 +480,7 @@ export default function ControlPanel() {
                     name="ongoing"
                     value="ongoing"
                     className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) => {handleStatusOngoing(e)}}
                   />
                   <label
                     htmlFor="country-option-2"
@@ -453,6 +497,7 @@ export default function ControlPanel() {
                     name="approved"
                     value="approved"
                     className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) => {handleStatusApproved(e)}}
                   />
                   <label
                     htmlFor="country-option-3"
@@ -469,6 +514,7 @@ export default function ControlPanel() {
                     name="denied"
                     value="denied"
                     className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus-ring-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) => {handleStatusDenied(e)}}
                   />
                   <label
                     htmlFor="country-option-4"
@@ -511,7 +557,7 @@ export default function ControlPanel() {
 
                 <div className="flex items-center mb-4">
                   <input
-                    id="softDev"
+                    id="softwareDevelopment"
                     type="radio"
                     name="softDev"
                     value="softDev"
@@ -527,7 +573,7 @@ export default function ControlPanel() {
 
                 <div className="flex items-center mb-4">
                   <input
-                    id="digMark"
+                    id="digitalMarketing"
                     type="radio"
                     name="digMark"
                     value="digMark"
@@ -543,7 +589,7 @@ export default function ControlPanel() {
 
                 <div className="flex items-center mb-4">
                   <input
-                    id="datAn"
+                    id="dataAnalysis"
                     type="radio"
                     name="datAn"
                     value="datAn"
@@ -605,8 +651,14 @@ export default function ControlPanel() {
               <p className="text-gray-500 dark:text-gray-400">{projectInProgress}</p>
             </div>
 
-            
+          <div style={{
+            display: "inline-block",
+            float: "right"
+          }}>
+          <button type="click" onClick={(e) => {handleSaveAllProposalChanges(e)}} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Save All Changes</button>
+          </div>
           </a>
+
         </div>
       )}
     </>
