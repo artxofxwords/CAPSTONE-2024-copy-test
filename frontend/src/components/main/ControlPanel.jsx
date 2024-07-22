@@ -1,12 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import contextProvider from "../header/Context"; //holds user and proposal info for site
 
 export default function ControlPanel() {
-  //const yourJwtToken = localStorage.getItem("token");
+  const navigate = useNavigate();
+  const { context, setContext } = useContext(contextProvider);
+  //const yourJwtToken = context.data.token;
 
   //useState variables
   const [allProposals, setAllProposals] = useState([]); //list of all proposals from database
   const [unreadProposals, setUnreadProposals] = useState([]); //list of all unread proposals based on "read = true or false"
   const [priorityProposals, setPriorityProposals] = useState([]); //list of top five proposals sorted by sponser availability date
+  const [softDevProposals, setSoftDevProposals] = useState([]);
+  const [digMarkProposals, setDigMarkroposals] = useState([]);
+  const [datAnProposals, setDatAnProposals] = useState([]);
+  const [uxUiProposals, setUxUiProposals] = useState([]);
+  
   const [currentProposal, setCurrentProposal] = useState(); //clicked proposal, fetches by id to display details
   const [currentProposalOwnerInfo, setCurrentProposalOwnerInfo] = useState([]); //sponsor info for selected proposal
 
@@ -16,12 +25,6 @@ export default function ControlPanel() {
   const [statusApproved, setStatusApproved] = useState(false); //mark approved once ready to assign to cohort
   const [statusDenied, setStatusDenied] = useState(false); //mark denied to remove from view
 
-  // const [noCategory, setNoCategory] = useState(true);
-  // const [categorySoftwareDevelopment, setCategorySoftwareDevelopment] = useState(false); 
-  // const [categoryDataAnalysis, setCategoryDataAnalysis] = useState(false);
-  // const [categoryUxUi, setCategoryUxUi] = useState(false);
-  // const [categoryDigitalMarketing, setCategoryDigitalMarketing] = useState(false);
-
   //useEffect functions
   useEffect(() => {
     getAllProposals(); //stays on top of changing proposals list
@@ -29,10 +32,8 @@ export default function ControlPanel() {
 
   useEffect(() => {
     allUnreadProposals(); //rerenders unread list
-  }, [allProposals]);
-
-  useEffect(() => {
     sortProposalsByPriority(); //rerenders priority list
+    sortProposalsByCategory();
   }, [allProposals]);
 
   useEffect(() => {
@@ -82,6 +83,34 @@ export default function ControlPanel() {
     setPriorityProposals(sortedProposals);
   }
 
+  async function sortProposalsByCategory () {
+    const softDev = [];
+    const digMark = [];
+    const datAn = [];
+    const uxUi = [];
+
+    try {
+      for (const item of allProposals) {
+        if (item.categorySoftwareDevelopment === true) {
+          softDev.push(item);
+        } else if (item.categoryDigitalMarketing === true) {
+          digMark.push(item);
+        } else if (item.categoryDataAnalysis === true) {
+          datAn.push(item);
+        } else if (item.categoryUxUi === true) {
+          uxUi.push(item);
+        }
+      }
+      
+      setSoftDevProposals(softDev);
+      setDigMarkroposals(digMark);
+      setDatAnProposals(datAn);
+      setUxUiProposals(uxUi);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   //onClick of any project in various lists, proposal appears in 'Project Detail View' with project details
   async function handleProposalClick(e, proposal) {
     e.preventDefault();
@@ -121,7 +150,7 @@ export default function ControlPanel() {
     const body = { read: true };
 
     const response = await fetch(
-      `http://localhost:3000/proposals/displayAllProposal/${currentProposal._id}`,
+      `http://localhost:3000/proposals/updateProposal/${currentProposal._id}`,
       {
         method: "PUT",
         body: JSON.stringify(body),
@@ -134,7 +163,7 @@ export default function ControlPanel() {
 
     const data = await response.json();
 
-    setReadProposal(!readProposal);
+    setReadProposal(true);
     console.log("Proposal marked as read.", data);
 
     getAllProposals();
@@ -179,7 +208,7 @@ async function handleSaveAllProposalChanges (e) {
     }
 
 
-    const response = await fetch(`http://localhost:3000/proposals/displayProposal/${currentProposal._id}`, {
+    const response = await fetch(`http://localhost:3000/proposals/updateProposal/${currentProposal._id}`, {
       method: "PUT",
       body: JSON.stringify(body),
       headers: {
@@ -205,7 +234,7 @@ async function handleSaveAllProposalChanges (e) {
             fontSize: "60px"
           }}
         >
-          Welcome admin!
+          Welcome, {context.userData.user.firstName}!
         </h1>
       </div>
       <div
@@ -222,6 +251,7 @@ async function handleSaveAllProposalChanges (e) {
           marginLeft: "25px",
         }}
       >
+        <h4><button type="click" onClick={() => {navigate("/proposal")}}>Submit a Proposal</button></h4>
         <div
           style={{
             display: "inline",
@@ -284,15 +314,15 @@ async function handleSaveAllProposalChanges (e) {
               Software Dev
             </h5>
             <ul className="w-98 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-              <li className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                Soft Dev project 1
-              </li>
-              <li className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
-                Soft Dev project 2
-              </li>
-              <li className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
-                Soft Dev project 3
-              </li>
+            {softDevProposals?.map((proposal) => (
+                <li
+                  key={proposal._id}
+                  onClick={(e) => {
+                    handleProposalClick(e, proposal)
+                  }}
+                  className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600"
+                >{proposal.companyName}</li>
+            ))}
             </ul>
           </a>
         </div>
@@ -307,12 +337,15 @@ async function handleSaveAllProposalChanges (e) {
               UX/UI
             </h5>
             <ul className="w-98 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-              <li className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                UX/UI project 1
-              </li>
-              <li className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
-                UX/UI project 2
-              </li>
+            {uxUiProposals?.map((proposal) => (
+                <li
+                  key={proposal._id}
+                  onClick={(e) => {
+                    handleProposalClick(e, proposal)
+                  }}
+                  className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600"
+                >{proposal.companyName}</li>
+            ))}
             </ul>
           </a>
         </div>
@@ -324,15 +357,18 @@ async function handleSaveAllProposalChanges (e) {
         >
           <a className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Data Analytics
+              Data Analysis
             </h5>
             <ul className="w-98 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-              <li className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                Data Analytics project 1
-              </li>
-              <li className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
-                Data Analytics project 2
-              </li>
+            {datAnProposals?.map((proposal) => (
+                <li
+                  key={proposal._id}
+                  onClick={(e) => {
+                    handleProposalClick(e, proposal)
+                  }}
+                  className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600"
+                >{proposal.companyName}</li>
+            ))}
             </ul>
           </a>
         </div>
@@ -347,12 +383,15 @@ async function handleSaveAllProposalChanges (e) {
               Digital Marketing
             </h5>
             <ul className="w-98 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-              <li className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">
-                Digital Marketing project 1
-              </li>
-              <li className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
-                Digital Marketing project 2
-              </li>
+            {digMarkProposals?.map((proposal) => (
+                <li
+                  key={proposal._id}
+                  onClick={(e) => {
+                    handleProposalClick(e, proposal)
+                  }}
+                  className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600"
+                >{proposal.companyName}</li>
+            ))}
             </ul>
           </a>
         </div>
@@ -386,12 +425,11 @@ async function handleSaveAllProposalChanges (e) {
                 {currentProposal.availabilityEnd}
               </h5>
               <button
+              type="click"
                 style={{
                   marginLeft: "25px",
                 }}
-                onClick={(e) => {
-                  handleMarkAsReadProposal(e);
-                }}
+                onClick={(e) => {handleMarkAsReadProposal(e)}}
               ><svg className="inline w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
               <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8m18 0-8.029-4.46a2 2 0 0 0-1.942 0L3 8m18 0-9 6.5L3 8"/>
             </svg>
@@ -526,116 +564,6 @@ async function handleSaveAllProposalChanges (e) {
               </fieldset>
             </div>
             </div>
-
-            <div>
-            <fieldset>
-                <legend>
-                  <p style={{
-                    display: "inline-flex",
-                    marginBottom: "8px"
-                  }}>
-                    Assign Category
-                    </p>
-                </legend>
-
-                <div className="flex items-center mb-4">
-                  <input
-                    id="unassigned"
-                    type="radio"
-                    name="unassigned"
-                    value="unassigned"
-                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                    checked
-                  />
-                  <label
-                    htmlFor="unassigned"
-                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    No category assigned
-                  </label>
-                </div>
-
-                <div className="flex items-center mb-4">
-                  <input
-                    id="softwareDevelopment"
-                    type="radio"
-                    name="softDev"
-                    value="softDev"
-                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    htmlFor="softDev"
-                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    Software Development
-                  </label>
-                </div>
-
-                <div className="flex items-center mb-4">
-                  <input
-                    id="digitalMarketing"
-                    type="radio"
-                    name="digMark"
-                    value="digMark"
-                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    htmlFor="digMark"
-                    className="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    Digital Marketing
-                  </label>
-                </div>
-
-                <div className="flex items-center mb-4">
-                  <input
-                    id="dataAnalysis"
-                    type="radio"
-                    name="datAn"
-                    value="datAn"
-                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    htmlFor="datAn"
-                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    Data Analytics
-                  </label>
-                </div>
-
-                <div className="flex items-center mb-4">
-                  <input
-                    id="uxUi"
-                    type="radio"
-                    name="uxUi"
-                    value="uxUi"
-                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    htmlFor="uxUi"
-                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    UX/UI
-                  </label>
-                </div>
-
-                <div className="flex items-center mb-4">
-                  <input
-                    id="all"
-                    type="radio"
-                    name="all"
-                    value="all"
-                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus-ring-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                  />
-                  <label
-                    htmlFor="all"
-                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                  >
-                    All Categories
-                  </label>
-                </div>
-              </fieldset>
-              </div>
 
 
             <div style={{
