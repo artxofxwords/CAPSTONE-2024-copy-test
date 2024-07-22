@@ -1,4 +1,6 @@
-export default function Carousal () {
+
+
+export default function Secret () {
 
 
     return (
@@ -7,9 +9,9 @@ export default function Carousal () {
                 alignContent: "center",
                 textAlign: "center",
                 width: "98vw",
-                height: "auto",
+                height: "100vh",
                 border: "1px solid black",
-                backgroundColor: "#818D92"
+                backgroundColor: "#25394f"
             }}>
 
 <div id="default-carousel" className="relative w-full" data-carousel="slide">
@@ -17,23 +19,23 @@ export default function Carousal () {
     <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
         
         <div className="hidden duration-700 ease-in-out" data-carousel-item="active">
-            <img src="https://drive.google.com/thumbnail?id=1sIUPKjP4CBIZ594lpQ5NWpNvCq-jX4BEsz=w1000" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="First image"></img>
+            <img src="insert image of Sid here" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="First Sid"></img>
         </div>
      
         <div className="hidden duration-700 ease-in-out" data-carousel-item="active">
-            <img src="https://drive.google.com/thumbnail?id=1n7WJz-Q9HyxWg3F5NwY9asTd6Dfdvf0Rsz=w1000" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="second image" />
+            <img src="insert image of Sid here" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="second Sid" />
         </div>
        
         <div className="hidden duration-700 ease-in-out" data-carousel-item="active">
-            <img src="https://drive.google.com/thumbnail?id=1yod8of8xNhdjJNePAg-sniabnpsKuAA9sz=w1000" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="third image" />
+            <img src="insert image of Sid here" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="third Sid" />
         </div>
         
         <div className="hidden duration-700 ease-in-out" data-carousel-item="active">
-            <img src="https://drive.google.com/thumbnail?id=1Od9hNvFBJN7Aa4Krl6pkTJU0trJOYYUgsz=w1000" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="fourth image" />
+            <img src="insert image of Sid here" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="fourth Sid" />
         </div>
         
         <div className="hidden duration-700 ease-in-out" data-carousel-item="active">
-            <img src="/docs/images/carousel/carousel-5.svg" className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="fifth image" />
+            <img src="insert image of Sid here" className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="fifth Sid" />
         </div>
     </div>
     
@@ -62,14 +64,7 @@ export default function Carousal () {
         </span>
     </button>
 </div>
-            <p style={{
-                textAlign: "right",
-                color: "white",
-                margin: "5px"
-            }}><a href="/library">Capstone Presentation Video Library</a></p>
             </div>
         </>
     )
 }
-
-//method for adding thumbnails to carousel from google drive found at https://creator79.hashnode.dev/integrating-google-drive-imagevedios-into-your-react-app
