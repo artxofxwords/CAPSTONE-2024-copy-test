@@ -35,14 +35,24 @@ const proposalSchema = new mongoose.Schema({
     },
     category: {
         type: Boolean,
-        required: true,
-        default: false,
-        cohort: {
-            type: Boolean,
-            required: true,
-            default: false
-        }
+        default: false
     }, 
+    categorySoftwareDevelopment: {
+        type: Boolean,
+        default: false
+    },
+    categoryDataAnalysis: {
+        type: Boolean,
+        default: false
+    },
+    categoryDigitalMarketing: {
+        type: Boolean,
+        default: false
+    },
+    categoryUxUi: {
+        type: Boolean,
+        default: false
+    },
     read: {
         type: Boolean,
         required: true,
