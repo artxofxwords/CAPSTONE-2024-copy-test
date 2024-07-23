@@ -1,10 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import contextProvider from "../header/Context"; //holds user and proposal info for site
+import CTX from "../header/Context"; //holds user and proposal info for site
 
 export default function ControlPanel() {
   const navigate = useNavigate();
-  const { context, setContext } = useContext(contextProvider);
+  const CONTEXT = useContext(CTX);
   //const yourJwtToken = context.data.token;
 
   //useState variables
@@ -45,6 +45,8 @@ export default function ControlPanel() {
   //functions
   //fetches all proposals
   async function getAllProposals() {
+    console.log("CONTEXT.userData:", CONTEXT.userData);
+
     const response = await fetch(
       `http://localhost:3000/proposals/displayAllProposal`
     );
@@ -234,7 +236,7 @@ async function handleSaveAllProposalChanges (e) {
             fontSize: "60px"
           }}
         >
-          Welcome, {context.userData.user.firstName}!
+          Welcome, {CONTEXT.userData.firstName}!
         </h1>
       </div>
       <div

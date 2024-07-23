@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css'
 import Landing from "./components/main/Landing";
@@ -10,16 +9,14 @@ import Library from './components/main/Library';
 import Dashboard from "./components/main/Dashboard";
 import ControlPanel from "./components/main/ControlPanel";
 
-import contextProvider from "./components/header/Context";
+import {ContextProvider} from "./components/header/Context";
 
 function App() {
-  const [context, setContext] = useState({ userData: null, proposalData: null });
-  const value = { context, setContext };
 
 
   return (
     <>
-      <contextProvider.Provider value={value}>
+      <ContextProvider>
       <BrowserRouter>
       <Routes>
       <Route path="/" element={<Landing />} />
@@ -32,7 +29,7 @@ function App() {
       <Route path="/controlpanel" element={<ControlPanel />} />
       </Routes>
       </BrowserRouter>
-      </contextProvider.Provider>
+      </ContextProvider>
     </>
   )
 }

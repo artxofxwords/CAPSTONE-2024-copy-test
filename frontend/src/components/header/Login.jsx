@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import contextProvider from "./Context";
+import CTX from "./Context";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { context, setContext } = useContext(contextProvider);
+  const CONTEXT = useContext(CTX);
 
   async function handleAccountLogin(e) {
     e.preventDefault();
@@ -23,13 +23,15 @@ export default function Login() {
     });
 
     const userData = await response.json();
+    console.log(userData);
 
 
     //store user info
-    setContext({userData: userData});
+    CONTEXT.setUserData(userData.user);
+    console.log("CONTEXT.userData:", CONTEXT.userData);
 
   //nav user based on auth
-  if (userData.user.isAdmin === true) {
+  if (CONTEXT.userData.isAdmin === true) {
     navigate("/controlpanel");
   } else {
     navigate("/controlpanel");
