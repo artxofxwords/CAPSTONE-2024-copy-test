@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css'
 import Landing from "./components/main/Landing";
@@ -11,10 +10,13 @@ import Dashboard from "./components/main/Dashboard";
 import ControlPanel from "./components/main/ControlPanel";
 import Secret from "./components/main/Secret";
 
+import {ContextProvider} from "./components/header/Context";
+
 function App() {
-  
+
   return (
     <>
+      <ContextProvider>
       <BrowserRouter>
       <Routes>
       <Route path="/" element={<Landing />} />
@@ -28,6 +30,7 @@ function App() {
       <Route path="/controlpanel" element={<ControlPanel />} />
       </Routes>
       </BrowserRouter>
+      </ContextProvider>
     </>
   )
 }

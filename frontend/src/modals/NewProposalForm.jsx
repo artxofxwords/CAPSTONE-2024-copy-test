@@ -1,38 +1,96 @@
-export default function NewProposalForm(isLoggedIn) {
-  let pleaseSignIn;
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import contextProvider from "../components/header/Context";
 
-  if (!isLoggedIn) {
-    pleaseSignIn = <h2>Please log in to submit a proposal!</h2>
-  } else {
-    pleaseSignIn = <h2></h2>
+export default function NewProposalForm() {
+  const navigate = useNavigate();
+  const { context, setContext } = useContext(contextProvider);
+
+  const [category, setCategory] = useState(false);
+  const [categorySoftwareDevelopment, setCategorySoftwareDevelopment] = useState(false); 
+  const [categoryDataAnalysis, setCategoryDataAnalysis] = useState(false);
+  const [categoryUxUi, setCategoryUxUi] = useState(false);
+  const [categoryDigitalMarketing, setCategoryDigitalMarketing] = useState(false);
+
+  const [projectExists, setProjectExists] = useState(false);
+
+  //functions to handle proposal category setting
+  function handleCategory (e) {
+    e.preventDefault();
+
+    setCategory(!category);
   }
 
-// companyName    
-// website    
-// projectStarted (true/false)    
-// proposition
-// techRequirements    
-// availabilityStart    
-// availabilityEnd    
-// contact
+  function handleSoftDev (e) {
+    e.preventDefault();
 
-// category (true/false)
-// category.cohort (true/false)
-// read (true/false)
-// approvedStatus (true/false)
-// underReviewStatus (true/false)
-// submittedStatus (true/false)
-// deniedStatus (true/false)
-// ongoingStatus (true/false)
-// owner
-// _id
+    setCategorySoftwareDevelopment(!categorySoftwareDevelopment);
+  }
+
+  function handleDatAn (e) {
+    e.preventDefault();
+
+    setCategoryDataAnalysis(!categoryDataAnalysis);
+  }
+
+  function handleUxUi (e) {
+    e.preventDefault();
+
+    setCategoryUxUi(!categoryUxUi);
+  }
+
+  function handleDigMark (e) {
+    e.preventDefault();
+
+    setCategoryDigitalMarketing(!categoryDigitalMarketing);
+  }
+
+  function handleCheck (e) {
+    e.preventDefault();
+  
+    setProjectExists(!projectExists);
+  }
+
+  async function handleFormSubmit (e) {
+    e.preventDefault();
+
+    const proposalData = {
+      companyName: e.target.companyName.value,    
+      website: e.target.website.value,
+      projectStarted: projectExists,    
+      proposition: e.target.proposition.value,
+      techRequirements: e.target.techRequirements.value, 
+      availabilityStart: e.target.availabilityStart.value,
+      availabilityEnd: e.target.availabilityEnd.value,
+      contact: e.target.contact.value,
+      category: category,
+      categorySoftwareDevelopment: categorySoftwareDevelopment,
+      categoryDataAnalysis: categoryDataAnalysis,
+      categoryDigitalMarketing: categoryDigitalMarketing,
+      categoryUxUi: categoryUxUi,
+      owner: context.userData.user._id
+    }
+
+    const response = await fetch(`http://localhost:3000/proposals/createProposal`, {
+      method: "POST",
+      body: JSON.stringify(proposalData),
+      headers: {
+        "Content-type": "application/json"
+      }
+    });
+
+    const data = await response.json();
+
+    console.log("Proposal created.", data);
+
+    setContext({proposalData: data});
+
+    navigate("/dashboard");
+  }
 
 
   return (
     <>
-    {pleaseSignIn}
-
-    {isLoggedIn && (
       <div
       style={{
         width: "45vw",
@@ -46,7 +104,8 @@ export default function NewProposalForm(isLoggedIn) {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Submit your proposal to Upright Capstone
             </h1>
-            <form className="space-y-4 md:space-y-6" action="#">
+            <p>(This proposal will be submitted with you, {context.userData.user.firstName}, as the owner.)</p>
+            <form className="space-y-4 md:space-y-6" onSubmit={(e) => {handleFormSubmit(e)}}>
               <div>
                 <label
                   htmlFor="Company name"
@@ -55,12 +114,10 @@ export default function NewProposalForm(isLoggedIn) {
                   Company Name (if applicable)
                 </label>
                 <input
-                  type="companyName"
                   name="companyName"
                   id="companyName"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Your company name"
-                  required="false"
                 />
               </div>
 
@@ -72,13 +129,109 @@ export default function NewProposalForm(isLoggedIn) {
                   Company Website (if applicable)
                 </label>
                 <input
-                  type="companyWebsite"
-                  name="companyWebsite"
-                  id="companyWebsite"
+                  name="website"
+                  id="website"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Your company website"
-                  required="false"
                 />
+              </div>
+
+              <div>
+            <fieldset>
+                <legend>
+                  <p style={{
+                    display: "inline-flex",
+                    marginBottom: "8px"
+                  }}>
+                    Assign Category
+                    </p>
+                </legend>
+
+                <div className="flex items-center mb-4">
+                  <input
+                    id="unassigned"
+                    type="radio"
+                    name="unassigned"
+                    value="unassigned"
+                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) => {handleCategory(e)}}
+                  />
+                  <label
+                    htmlFor="unassigned"
+                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    I&apos;m not sure
+                  </label>
+                </div>
+
+                <div className="flex items-center mb-4">
+                  <input
+                    id="softwareDevelopment"
+                    type="radio"
+                    name="softDev"
+                    value="softDev"
+                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) => {handleSoftDev(e)}}
+                  />
+                  <label
+                    htmlFor="softDev"
+                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    Software Development
+                  </label>
+                </div>
+
+                <div className="flex items-center mb-4">
+                  <input
+                    id="digitalMarketing"
+                    type="radio"
+                    name="digMark"
+                    value="digMark"
+                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) => {handleDigMark(e)}}
+                  />
+                  <label
+                    htmlFor="digMark"
+                    className="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    Digital Marketing
+                  </label>
+                </div>
+
+                <div className="flex items-center mb-4">
+                  <input
+                    id="dataAnalysis"
+                    type="radio"
+                    name="datAn"
+                    value="datAn"
+                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) => {handleDatAn(e)}}
+                  />
+                  <label
+                    htmlFor="datAn"
+                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    Data Analytics
+                  </label>
+                </div>
+
+                <div className="flex items-center mb-4">
+                  <input
+                    id="uxUi"
+                    type="radio"
+                    name="uxUi"
+                    value="uxUi"
+                    className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) => {handleUxUi(e)}}
+                  />
+                  <label
+                    htmlFor="uxUi"
+                    className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    UX/UI
+                  </label>
+                </div>
+              </fieldset>
               </div>
 
               <div>
@@ -88,17 +241,16 @@ export default function NewProposalForm(isLoggedIn) {
                 >
                   Proposition - please be as detailed as possible
                 </label>
-                <textarea id="projectProposition" rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Explain the project..." required="true"></textarea>
+                <textarea id="proposition" rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Explain the project..." required="true"></textarea>
               </div>
 
               <div className="flex items-start">
                 <div className="flex items-center h-5">
                   <input
                     id="projectStarted"
-                    aria-describedby="terms"
                     type="checkbox"
                     className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                    required="true"
+                    onChange={(e) => {handleCheck(e)}}
                   />
                 </div>
                 <div className="ml-3 text-sm">
@@ -129,7 +281,7 @@ export default function NewProposalForm(isLoggedIn) {
                     </svg>
                   </div>
                   <input
-                    id="datepicker-range-start"
+                    id="availabilityStart"
                     name="start"
                     type="text"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -150,7 +302,7 @@ export default function NewProposalForm(isLoggedIn) {
                     </svg>
                   </div>
                   <input
-                    id="datepicker-range-end"
+                    id="availabilityEnd"
                     name="end"
                     type="text"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -167,12 +319,10 @@ export default function NewProposalForm(isLoggedIn) {
                   Project Technologies used or preferred
                 </label>
                 <input
-                  type="techRequirements"
                   name="techRequirements"
                   id="techRequirements"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Tech or software requirements"
-                  required="false"
                 />
               </div>
 
@@ -184,7 +334,6 @@ export default function NewProposalForm(isLoggedIn) {
                   The best contact for this proposal (enter a phone number or email)
                 </label>
                 <input
-                  type="contact"
                   name="contact"
                   id="contact"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -206,7 +355,6 @@ export default function NewProposalForm(isLoggedIn) {
         </div>
       </section>
       </div>
-      )}
     </>
   );
 }
