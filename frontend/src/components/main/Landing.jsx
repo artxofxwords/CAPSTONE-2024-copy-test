@@ -1,5 +1,8 @@
+import LoginHeader from "../header/loginHeader.jsx";
+
 import Header from "../header/Header.jsx";
 import Carousal from "./Carousal.jsx";
+import Categories from "./Categories.jsx";
 
 export default function Landing () {
 
@@ -8,9 +11,12 @@ export default function Landing () {
         <div style={{
             marginLeft: "25px"
         }}>
-            <Header />
+            <LoginHeader/>
+            {/* <Header /> */}
 
-            <Carousal />
+
+            <Categories/>
+            {/* <Carousal /> */}
         </div>
     )
 }
