@@ -1,17 +1,17 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import CTX from "./Context";
 
 export default function Login() {
   const navigate = useNavigate();
+  const CONTEXT = useContext(CTX);
 
   async function handleAccountLogin(e) {
     e.preventDefault();
 
-    const username = e.target.username.value;
-    const password = e.target.password.value;
-
     const body = {
-      username: username,
-      password: password,
+      username: e.target.username.value,
+      password: e.target.password.value,
     };
 
     const response = await fetch("http://localhost:3000/users/login", {
@@ -22,28 +22,19 @@ export default function Login() {
       },
     });
 
-    const data = await response.json();
+    const userData = await response.json();
+    console.log(userData);
 
 
     //store user info
-    localStorage.setItem("_id", data.user._id);
-    localStorage.setItem("username", data.user.username);
-    localStorage.setItem("firstName", data.user.firstName);
-    localStorage.setItem("lastName", data.user.lastName);
-    localStorage.setItem("email", data.user.email);
-    localStorage.setItem("companyName", data.user.companyName);
-    localStorage.setItem("city", data.user.city);
-    localStorage.setItem("state", data.user.state);
-    localStorage.setItem("isAdmin", data.user.isAdmin);
-    localStorage.setItem("jwtToken", data.token);
+    CONTEXT.setUserData(userData.user);
+    console.log("CONTEXT.userData:", CONTEXT.userData);
 
-  //in this code at the end, there needs to be an "if" statement that asks if the user isAdmin
-  //if isAdmin === true, code should end with navigate("/controlpanel")
-  //if isAdmin === false, code should end with navigate("/dashboard")
-    if (data.user.isAdmin === true) {
+  //nav user based on auth
+  if (CONTEXT.userData.isAdmin === true) {
     navigate("/controlpanel");
   } else {
-    navigate("/dashboard");
+    navigate("/controlpanel");
   }
   }
 
@@ -68,7 +59,9 @@ export default function Login() {
     <input type="password" id="password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
   </div>
   <div className="flex items-start mb-5">
-  <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+  <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+    Submit
+    </button>
       </div>
 </form>
 <p className="text-center text-sm font-light text-gray-500 dark:text-gray-400">
