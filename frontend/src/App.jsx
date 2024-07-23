@@ -8,11 +8,11 @@ import About from "./components/main/About";
 import Library from './components/main/Library';
 import Dashboard from "./components/main/Dashboard";
 import ControlPanel from "./components/main/ControlPanel";
+import Secret from "./components/main/Secret";
 
 import {ContextProvider} from "./components/header/Context";
 
 function App() {
-
 
   return (
     <>
@@ -24,6 +24,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/proposal" element={<NewProposalForm />} />
       <Route path="/about" element={<About />} />
+      <Route path="/secret" element={<Secret />}/>
       <Route path="/library" element={<Library />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/controlpanel" element={<ControlPanel />} />

@@ -5,9 +5,9 @@ export default function Nav () {
 
     return (
         <div style={{
-            width: "95vw",
+            width: "98vw",
             height: "10vh",
-            backgroundColor: "lightgray",
+            backgroundColor: "#25394f",
             alignContent: "center",
             textAlign: "right"
         }}>
@@ -15,12 +15,34 @@ export default function Nav () {
                 display: "inline-flex",
                 flexDirection: "row"
             }}>
+                <img
+            width="200px"
+            height="50px"
+            src="https://cdn.prod.website-files.com/64921323294d7b037da1a52c/649b14c49b4e1c2fd060f3f2_Upright-logo.svg"
+          >
+          </img>
+          <button 
+                type="click"
+                onClick={() => navigate('/secret')}
+                style={{
+                    display: "flex",
+                    backgroundColor: "unset",
+                    color: "black",
+                    border: "0px",
+                    borderRadius: "8px",
+                    marginRight: "15px",
+                    marginLeft: "590px",
+                    padding: "5px"
+                }}
+                >
+                
+                </button>
                 <button
                 type="click"
                 onClick={() => navigate('/about')}
                 style={{
                     display: "flex",
-                    backgroundColor: "white",
+                    backgroundColor: "#ff532f",
                     color: "black",
                     border: "0px",
                     borderRadius: "8px",
@@ -32,25 +54,10 @@ export default function Nav () {
                 </button>
                 <button 
                 type="click"
-                onClick={() => navigate('/proposal')}
-                style={{
-                    display: "flex",
-                    backgroundColor: "white",
-                    color: "black",
-                    border: "0px",
-                    borderRadius: "8px",
-                    marginRight: "15px",
-                    padding: "5px"
-                }}
-                >
-                    Submit a Proposal
-                </button>
-                <button 
-                type="click"
                 onClick={() => navigate('/register')}
                 style={{
                     display: "flex",
-                    backgroundColor: "white",
+                    backgroundColor: "#ff532f",
                     color: "black",
                     border: "0px",
                     borderRadius: "8px",
@@ -65,7 +72,7 @@ export default function Nav () {
                 onClick={() => navigate('/login')}
                 style={{
                     display: "flex",
-                    backgroundColor: "white",
+                    backgroundColor: "#ff532f",
                     color: "black",
                     border: "0px",
                     borderRadius: "8px",
