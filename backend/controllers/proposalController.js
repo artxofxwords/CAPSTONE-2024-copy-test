@@ -23,15 +23,7 @@ exports.displayProposal = async (req, res) => {
         console.log(req.params)
         // const proposalId = req.params._id
         const allProposals = await Proposal.findOne({_id: req.params._id});
-        // for (let proposal in allProposals) {
-            // console.log(allProposals[proposal]);
-            // let newUser = await User.findById({_id: allProposals[proposal].user_id});
-            // let newProposal = {_id: allProposals[proposal]._id, companyName: allProposals[proposal].companyName, website: allProposals[proposal].website, projectStarted: allProposals[proposal].projectStarted,
-            //     proposition: allProposals[proposal].proposition, techRequirements: allProposals[proposal].techRequirements, availabilityStart: allProposals[proposal].availabilityStart, availabilityEnd: allProposals[proposal].availabilityEnd,
-            //     contact: allProposals[proposal].contact, owner: allProposals[proposal].owner}
-            // console.log(`Proposals to appear`, newProposal);
-            // allProposals.push(newProposal);
-        // }
+
         console.log(`${allProposals}`);
         res.status(200).json(allProposals);
             } catch (err) {
@@ -50,13 +42,18 @@ exports.createProposal = async (req, res) => {
     const availabilityStart = req.body.availabilityStart
     const availabilityEnd = req.body.availabilityEnd
     const contact = req.body.contact
-    const owner = req.body.owner;
-    const proposalId = req.body._id
+    const owner = req.body.owner
+    const category = req.body.category
+    const categorySoftwareDevelopment = req.body.category
+    const categoryDataAnalysis = req.body.categoryDataAnalysis
+    const categoryDigitalMarketing = req.body.categoryDigitalMarketing
+    const categoryUxUi = req.body.categoryUxUi
 
     try {
 
             const newProposal = new Proposal({companyName: companyName, website: website, projectStarted: projectStarted, proposition: proposition, techRequirements: techRequirements,
-                availabilityStart: availabilityStart, availabilityEnd: availabilityEnd, contact: contact, owner: owner});
+                availabilityStart: availabilityStart, availabilityEnd: availabilityEnd, contact: contact, owner: owner, category: category, categorySoftwareDevelopment: categorySoftwareDevelopment, 
+            categoryDataAnalysis: categoryDataAnalysis, categoryDigitalMarketing: categoryDigitalMarketing, categoryUxUi: categoryUxUi});
 
                 console.log(`Proposal Submitted: ${newProposal}`);
                 const test = await newProposal.save();
@@ -84,7 +81,18 @@ exports.updateProposal = async (req, res) => {
                 availabilityStart: req.body.availabilityStart,
                 availabilityEnd: req.body.availabilityEnd,
                 contact: req.body.contact,
-                owner: req.body.owner
+                owner: req.body.owner,
+                category: req.body.category,
+                categorySoftwareDevelopment: req.body.category,
+                categoryDataAnalysis: req.body.categoryDataAnalysis,
+                categoryDigitalMarketing: req.body.categoryDigitalMarketing,
+                categoryUxUi: req.body.categoryUxUi,
+                read: req.body.read,
+                approvedStatus: req.body.approvedStatus,
+                underReviewStatus: req.body.underReviewStatus,
+                submittedStatus: req.body.submittedStatus,
+                deniedStatus: req.body.deniedStatus,
+                ongoingStatus: req.body.ongoingStatus
             }
 
             await Proposal.findOneAndUpdate({_id: req.params._id}, replacingProposal);
