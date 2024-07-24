@@ -1,4 +1,8 @@
+
+import { useNavigate } from "react-router-dom";
+
 export default function categories() {
+    const navigateCat = useNavigate();
 
     return (
         <>
@@ -28,9 +32,7 @@ export default function categories() {
                     width: "80%",
                     maxWidth: "80%",
                     justifyContent: "center",
-                    alignItems: "center",
-                    paddingTop: "0%",
-                    paddingBottom: "0%"
+                    alignItems: "center"
                 }}>
                     <div 
                     style={{
@@ -40,29 +42,49 @@ export default function categories() {
                         textAlign: "center",
                         border: "1px solid #ddd"
                     }}>
-                        <button>Software Engineering</button>
                         <img src="https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"/>
+                        <button
+                        type="click"
+                        onClick={() => navigateCat('/softwareEngineering')}>
+                            Software Engineering</button>
+                        
                     </div>
                     <div
                     style={{
                         backgroundColor: "#4CAF50",
                         color: "white",
-                        padding: "45%",
+                        // padding: "45%",
                         textAlign: "center",
                         border: "1px solid #ddd"
                     }}>
-                        <button>Digital Marketing</button>
+                        <img src="https://images.pexels.com/photos/6476808/pexels-photo-6476808.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"/>
+                        <button
+                        type="click"
+                        onClick={() => navigateCat('/digitalMarketing')}>
+                        Digital Marketing</button>
                     </div>
                     <div
                     style={{
-                        backgroundColor: "#4CAF50",
+                        backgroundColor: "#78B87A",
                         color: "white",
-                        padding: "45%",
+                        // padding: "%",
                         textAlign: "center",
                         border: "1px solid #ddd"
                     }}>
-                        <button>UI/UX Design</button>
-                        <img src="https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"/>
+                        <img src="https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                            style={{
+                                height: "15vh",
+                                width: "5vw",
+                                objectFit: "cover",
+                                display: "block",
+                                margin: "auto"
+                            }}
+                        />
+                        <button
+                        type="click"
+                        onClick={() => navigateCat('/UiUxDesign')}>
+                        UI/UX Design</button>
+
                     </div>
                     <div
                     style={{
@@ -73,7 +95,11 @@ export default function categories() {
                         border: "1px solid #ddd",
                         marginLeft: "-2%"
                     }}>
-                        <button>Data Analytics</button>
+                        <img src="https://images.pexels.com/photos/95916/pexels-photo-95916.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"/>
+                        <button
+                        type="click"
+                        onClick={() => navigateCat('/DataAnalytics')}>
+                            Data Analytics</button>
                     </div>
                     <img src=""/>
                 </div>

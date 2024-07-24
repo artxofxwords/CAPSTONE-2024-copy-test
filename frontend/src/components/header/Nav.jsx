@@ -32,21 +32,6 @@ export default function Nav () {
                 </button>
                 <button 
                 type="click"
-                onClick={() => navigate('/proposal')}
-                style={{
-                    display: "flex",
-                    backgroundColor: "white",
-                    color: "black",
-                    border: "0px",
-                    borderRadius: "8px",
-                    marginRight: "15px",
-                    padding: "5px"
-                }}
-                >
-                    Submit a Proposal
-                </button>
-                <button 
-                type="click"
                 onClick={() => navigate('/register')}
                 style={{
                     display: "flex",

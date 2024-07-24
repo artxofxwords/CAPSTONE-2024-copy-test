@@ -65,9 +65,7 @@ export default function Header() {
             justifyContent: "center",
             alignItems: "center"
           }}>
-          <img
-            width="300px"
-            height="200px"
+          <img 
             src="https://loremflickr.com/320/240"
           >
           </img>

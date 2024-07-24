@@ -1,6 +1,8 @@
 import Nav from "./Nav.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function loginHeader() {
+    const navigateProp = useNavigate();
 
     return (
         <>
@@ -55,7 +57,9 @@ export default function loginHeader() {
             justifyContent: "center",
             marginTop: "5%"
         }}>
-            <button>
+            <button
+            type="click"
+            onClick={() => navigateProp('/proposal')}>
             Submit a Proposal
         </button>
         </p>

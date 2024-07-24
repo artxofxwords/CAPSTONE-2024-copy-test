@@ -9,6 +9,7 @@ import About from "./components/main/About";
 import Library from './components/main/Library';
 import Dashboard from "./components/main/Dashboard";
 import ControlPanel from "./components/main/ControlPanel";
+import Proposal from "./components/main/Proposal";
 
 function App() {
   //useState variables
@@ -39,6 +40,7 @@ function App() {
       <Route path="/library" element={<Library />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/controlpanel" element={<ControlPanel />} />
+      <Route path="/proposal" element={<Proposal />} />
       </Routes>
       </BrowserRouter>
     </>
