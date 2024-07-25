@@ -1,6 +1,8 @@
 import Nav from "./Nav.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function loginHeader() {
+    const navigateProp = useNavigate();
 
     return (
         <>
@@ -8,12 +10,13 @@ export default function loginHeader() {
 
         <div
             style={{
-            display: "inline-flex",
-            justifyContent: "center",
-            flexDirection: "row",
-            backgroundColor:"darkgray",
-            width: "95vw",
-            height: "40vh",
+                display: "inline-flex",
+                justifyContent: "center",
+                flexDirection: "row",
+                backgroundColor: "#1A9988",
+                width: "98vw",
+                height: "50vh",
+                
 
             }}
             >
@@ -21,7 +24,8 @@ export default function loginHeader() {
             style={{
                 display: "flex",
                 width: "90vw",
-                height: "auto"
+                height: "auto",
+                justifyContent: "center"
             }}
         >
             <div>
@@ -31,13 +35,11 @@ export default function loginHeader() {
                 alignItems: "center",
                 marginTop: "25%",
                 marginRight: "0%",
-                color: "black",
-                borderRadius: "15px",
-                border: "5px solid black",
+                color: "white",
                 padding: "20px 250px",
                 width: "100%",
                 height: "auto",
-                fontSize: "150%",
+                fontSize: "300%",
                 maxWidth: "500%"
         }}>
             Welcome!
@@ -46,7 +48,8 @@ export default function loginHeader() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            marginTop: "5%"
+            marginTop: "20%",
+            color: "white"
         }}>
             Click the button below to submit a proposal!
         </p>
@@ -55,20 +58,17 @@ export default function loginHeader() {
             justifyContent: "center",
             marginTop: "5%"
         }}>
-            <button>
+            <button
+            type="click"
+            onClick={() => navigateProp('/Proposal')}
+            style={{
+                color: "white",
+                marginTop: "10%"
+            }}>
             Submit a Proposal
         </button>
         </p>
         
-            </div>
-            <div style={{
-                marginLeft: "20%",
-                marginTop: "10%"
-            }
-            }>
-                <img
-                    src="https://wp.testbytes.net//wp-content/uploads/2019/06/Untitled-1-1-300x210-1.png">
-                </img>
             </div>
             
         </div>

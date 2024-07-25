@@ -1,5 +1,6 @@
 import LoginHeader from "../header/loginHeader.jsx";
 
+
 import Header from "../header/Header.jsx";
 import Testimonies from "../main/Testimonies.jsx"
 import Carousal from "./Carousal.jsx";
@@ -14,15 +15,7 @@ export default function Landing () {
             // marginLeft: "1px",
             // marginRight: "1px"
         }}>
-            <LoginHeader/>
-            {/* <Header /> */}
-
-
-
-           {/* <Categories/> */}
-
-            <Testimonies />
-
+            <Header />
             <Carousal />
         </div>
     )

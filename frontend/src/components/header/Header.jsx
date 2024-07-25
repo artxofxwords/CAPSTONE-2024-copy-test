@@ -20,7 +20,8 @@ export default function Header() {
           style={{
             display: "flex",
             width: "90vw",
-            height: "auto"
+            height: "auto",
+            backgroundColor: "black"
           }}
         >
           <div style={{

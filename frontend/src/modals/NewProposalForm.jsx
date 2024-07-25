@@ -96,6 +96,13 @@ export default function NewProposalForm() {
         width: "45vw",
         height: "80vh",
         margin: "15px",
+        display: "flex",
+        marginLeft: "auto",
+        marginRight: "auto",
+        border: "2px solid black",
+        // textAlign: "center",
+        justifyContent: "center",
+        alignItems: "center"
       }}
     >
       <section className="bg-gray-50 dark:bg-gray-900">
@@ -104,7 +111,7 @@ export default function NewProposalForm() {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Submit your proposal to Upright Capstone
             </h1>
-            <p>(This proposal will be submitted with you, {context.userData.user.firstName}, as the owner.)</p>
+            {/* <p>(This proposal will be submitted with you, {context.userData.user.firstName}, as the owner.)</p> */}
             <form className="space-y-4 md:space-y-6" onSubmit={(e) => {handleFormSubmit(e)}}>
               <div>
                 <label
