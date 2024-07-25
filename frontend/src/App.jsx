@@ -10,6 +10,7 @@ import Dashboard from "./components/main/Dashboard";
 import ControlPanel from "./components/main/ControlPanel";
 import Proposal from "./components/main/Proposal";
 import Secret from "./components/main/Secret";
+import SoftwareEngineering from './components/main/SoftwareEngineering';
 
 import {ContextProvider} from "./components/header/Context";
 
@@ -23,13 +24,14 @@ function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/proposal" element={<NewProposalForm />} />
+      {/* <Route path="/proposal" element={<NewProposalForm />} /> */}
       <Route path="/about" element={<About />} />
       <Route path="/secret" element={<Secret />}/>
       <Route path="/library" element={<Library />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/controlpanel" element={<ControlPanel />} />
       <Route path="/proposal" element={<Proposal />} />
+      <Route path='/softwareEngineering' element={<SoftwareEngineering />} />
       </Routes>
       </BrowserRouter>
       </ContextProvider>

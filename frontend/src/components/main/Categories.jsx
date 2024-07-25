@@ -25,7 +25,6 @@ export default function categories() {
             }}>
                 <div
                 style={{
-                    border: "5px solid black",
                     display: "grid",
                     gridTemplateColumns: "repeat(4, 1fr)",
                     gap: "10px",
@@ -36,14 +35,21 @@ export default function categories() {
                 }}>
                     <div 
                     style={{
-                        backgroundColor: "#4CAF50",
                         color: "black",
-                        padding: "45%",
                         textAlign: "center",
                         border: "1px solid #ddd"
                     }}>
-                        <img src="https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"/>
+                        <img src="https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                        style={{
+                            height: "20vh",
+                            width: "15vw",
+                            margin: "auto"
+                        }}/>
                         <button
+                        style={{
+                            display: "inline-block",
+                            marginTop: "-5%"
+                        }}
                         type="click"
                         onClick={() => navigateCat('/softwareEngineering')}>
                             Software Engineering</button>
@@ -51,13 +57,16 @@ export default function categories() {
                     </div>
                     <div
                     style={{
-                        backgroundColor: "#4CAF50",
-                        color: "white",
-                        // padding: "45%",
+                        color: "black",
                         textAlign: "center",
                         border: "1px solid #ddd"
                     }}>
-                        <img src="https://images.pexels.com/photos/6476808/pexels-photo-6476808.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"/>
+                        <img src="https://images.pexels.com/photos/6476808/pexels-photo-6476808.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                        style={{
+                            height: "20vh",
+                            width: "15vw",
+                            margin: "auto"
+                        }}/>
                         <button
                         type="click"
                         onClick={() => navigateCat('/digitalMarketing')}>
@@ -65,18 +74,17 @@ export default function categories() {
                     </div>
                     <div
                     style={{
-                        backgroundColor: "#78B87A",
-                        color: "white",
-                        // padding: "%",
+
+                        color: "black",
                         textAlign: "center",
                         border: "1px solid #ddd"
                     }}>
                         <img src="https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                             style={{
-                                height: "15vh",
-                                width: "5vw",
-                                objectFit: "cover",
-                                display: "block",
+                                height: "20vh",
+                                width: "15vw",
+                                // objectFit: "cover",
+                                // display: "block",
                                 margin: "auto"
                             }}
                         />
@@ -88,14 +96,17 @@ export default function categories() {
                     </div>
                     <div
                     style={{
-                        backgroundColor: "#4CAF50",
-                        color: "white",
-                        padding: "45%",
+                        color: "black",
                         textAlign: "center",
                         border: "1px solid #ddd",
                         marginLeft: "-2%"
                     }}>
-                        <img src="https://images.pexels.com/photos/95916/pexels-photo-95916.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"/>
+                        <img src="https://images.pexels.com/photos/95916/pexels-photo-95916.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                        style={{
+                            height: "20vh",
+                            width: "15vw",
+                            margin: "auto"
+                        }}/>
                         <button
                         type="click"
                         onClick={() => navigateCat('/DataAnalytics')}>
