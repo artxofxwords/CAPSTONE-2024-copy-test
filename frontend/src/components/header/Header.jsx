@@ -1,4 +1,6 @@
 import Nav from "./Nav.jsx";
+import {Button} from "flowbite-react";
+import {customTheme} from "../../flowbiteCustom/Flowbite.js";
 
 export default function Header() {
     
@@ -12,59 +14,49 @@ export default function Header() {
         justifyContent: "center",
         flexDirection: "row",
         backgroundColor: "#25394f",
-        width: "98vw",
-        height: "50vh",
+        height: "auto",
+        padding: "25px"
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            width: "90vw",
-            height: "auto"
-          }}
-        >
+
           <div style={{
-            alignContent: "center",
-            textAlign: "center",
-            width: "50vw"
+            display: "flex",
+            flexDirection: "column",
+            rowGap: "3vh",
+            width: "60vw"
           }}>
+            
             <h1
               style={{
                 color: "white",
-                fontSize: "30px",
-                paddingBottom: "15px",
+                textAlign: "center",
+                fontSize: "30px"
               }}
             >
-              Apply to be considered for a partnership, at no cost to you, with our exited and capable Upright learners!
+              Apply to be considered for a partnership, at no cost to you, with our excited and capable Upright learners!
             </h1>
             <p
               style={{
                 color: "white",
-                fontSize: "18px",
-                marginBottom: "14px"
+                fontSize: "18px"
               }}
             >
-              Register to submit and track your proposal status. Submissions will be reviewed by our team. Upon approval you'll be assigned a cohort and 
-              a team within that cohort who you'll meet with to discuss your vision. You'll work closely with your team for a month long capstone to bring your 
+              Register to submit and track your proposal status. Submissions will be reviewed by our team. Upon approval you&apos;ll be assigned a cohort and 
+              a team within that cohort who you&apos;ll meet with to discuss your vision. You&apos;ll work closely with your team for a month long capstone to bring your 
               idea to life!
             </p>
-            <button><a
+            <div style={{display: "flex", justifyContent: "center"}}>
+            <Button theme={customTheme} color="primary"><a
             href="https://www.uprighted.com/courses"
             target="_blank"
-              style={{
-                backgroundColor: "#ff532f",
-                color: "black",
-                border: "0px",
-                borderRadius: "4px",
-                padding: "2px"
-              }}
             >
               Learn more!
-            </a></button>
+            </a></Button></div>
           </div>
+
           <div style={{
             display: "flex",
-            width:"50vw",
+            width:"40vw",
             height: "auto",
             justifyContent: "center",
             alignItems: "center"
@@ -75,7 +67,7 @@ export default function Header() {
             src="https://cdn.prod.website-files.com/64921323294d7b037da1a52c/649b14c49b4e1c2fd060f3f2_Upright-logo.svg"
           >
           </img>
-          </div>
+          
         </div>
       </div>
     </>

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Nav from "../header/Nav";
+import Search from "../header/Search";
 
 export default function Library () {
     const navigate = useNavigate();
@@ -8,8 +9,7 @@ export default function Library () {
 
         <>
         <Nav />
-
-
+        <Search />
 
         <h1 style={{
             textAlign: "center",

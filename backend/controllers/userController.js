@@ -105,3 +105,13 @@ exports.getUserById = async (req, res) => {
         res.status(500).json("Could not find user!")
     }
 };
+
+exports.getUserbyUsername = async (req, res) => {
+    try {
+        await user.find({username: req.params.username});
+
+        res.status(200).json("User exists.")
+    } catch (err) {
+        res.status(500).json("Could not find user!")
+    }
+};

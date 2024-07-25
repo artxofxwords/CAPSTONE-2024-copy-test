@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
+import {Button} from "flowbite-react";
+import {customTheme} from "../../flowbiteCustom/Flowbite.js";
 
 export default function Nav () {
     const navigate = useNavigate();
 
     return (
         <div style={{
-            width: "98vw",
+            width: "screen",
             height: "10vh",
             backgroundColor: "#25394f",
             alignContent: "center",
@@ -13,7 +15,9 @@ export default function Nav () {
         }}>
             <div style={{
                 display: "inline-flex",
-                flexDirection: "row"
+                flexDirection: "row",
+                columnGap: "8px",
+                marginRight: "5px"
             }}>
                 <img
             width="200px"
@@ -37,51 +41,24 @@ export default function Nav () {
                 >
                 
                 </button>
-                <button
+                <Button theme={customTheme} color="primary"
                 type="click"
                 onClick={() => navigate('/about')}
-                style={{
-                    display: "flex",
-                    backgroundColor: "#ff532f",
-                    color: "black",
-                    border: "0px",
-                    borderRadius: "8px",
-                    marginRight: "15px",
-                    padding: "5px"
-                }}
                 >
-                    Learn More About the Dev Team
-                </button>
-                <button 
+                    Meet the Dev Team
+                </Button>
+                <Button theme={customTheme} color="primary" 
                 type="click"
                 onClick={() => navigate('/register')}
-                style={{
-                    display: "flex",
-                    backgroundColor: "#ff532f",
-                    color: "black",
-                    border: "0px",
-                    borderRadius: "8px",
-                    marginRight: "15px",
-                    padding: "5px"
-                }}
                 >
                     Register as New User
-                </button>
-                <button
+                </Button>
+                <Button theme={customTheme} color="primary"
                 type="click"
                 onClick={() => navigate('/login')}
-                style={{
-                    display: "flex",
-                    backgroundColor: "#ff532f",
-                    color: "black",
-                    border: "0px",
-                    borderRadius: "8px",
-                    marginRight: "15px",
-                    padding: "5px"
-                }}
                 >
                     Login
-                </button>
+                </Button>
             </div>
         </div>
 

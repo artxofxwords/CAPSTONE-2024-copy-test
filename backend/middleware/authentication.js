@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 function authentication (req, res, next) {
     const token = req.header("Authorization").replace("Bearer ", '');
@@ -10,10 +11,10 @@ function authentication (req, res, next) {
     try {
         const verifyToken = jwt.verify(token, process.env.SECRET_KEY);
         req.body._id = verifyToken.id;
-        req.body.isAdmin = verifyToken.isAdminl
-        console.log(`User Id: ${req.body._id}, and status ${req.body.isAdmin}`);
+        req.body.isAdmin = verifyToken.isAdmin;
+        console.log(`Auth User Id: ${req.body._id}, Admin Status: ${req.body.isAdmin}`);
 
-        next()
+        next();
     } catch (err) {
         res.status(400).json({ message: "Invalid token "});
     }
