@@ -2,6 +2,8 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import CTX from "./Context";
 
+let loginFailed;
+
 export default function Login() {
   const navigate = useNavigate();
   const CONTEXT = useContext(CTX);
@@ -23,19 +25,25 @@ export default function Login() {
     });
 
     const userData = await response.json();
-    console.log(userData);
-
+    console.log("User Data: ", userData);
 
     //store user info
     CONTEXT.setUserData(userData.user);
-    console.log("CONTEXT.userData:", CONTEXT.userData);
+    localStorage.setItem("jwtToken", userData.token);
 
-  //nav user based on auth
-  if (CONTEXT.userData.isAdmin === true) {
-    navigate("/controlpanel");
-  } else {
-    navigate("/controlpanel");
-  }
+    //error handling
+    if (response.status === 204) {
+      loginFailed = <p>Login failed. Please try again.</p>
+
+      e.target.reset();
+    } else {
+        //nav user based on auth
+        if (CONTEXT.userData.isAdmin === true) {
+          navigate("/controlpanel");
+        } else {
+          navigate("/controlpanel");
+        }
+      }
   }
 
   return (
@@ -64,6 +72,7 @@ export default function Login() {
     </button>
       </div>
 </form>
+{loginFailed}
 <p className="text-center text-sm font-light text-gray-500 dark:text-gray-400">
                 Don&apos;t have an account?{" "}
                 <a

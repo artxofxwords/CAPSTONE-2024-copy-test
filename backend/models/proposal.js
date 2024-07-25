@@ -41,7 +41,7 @@ const proposalSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    categoryDataAnalysis: {
+    categoryDataAnalytics: {
         type: Boolean,
         default: false
     },

@@ -1,16 +1,20 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import contextProvider from "../components/header/Context";
+import {Datepicker} from "flowbite-react";
+import CTX from "../components/header/Context"; //holds user and proposal info for site
 
 export default function NewProposalForm() {
   const navigate = useNavigate();
-  const { context, setContext } = useContext(contextProvider);
+  const CONTEXT = useContext(CTX);
 
   const [category, setCategory] = useState(false);
   const [categorySoftwareDevelopment, setCategorySoftwareDevelopment] = useState(false); 
   const [categoryDataAnalysis, setCategoryDataAnalysis] = useState(false);
   const [categoryUxUi, setCategoryUxUi] = useState(false);
   const [categoryDigitalMarketing, setCategoryDigitalMarketing] = useState(false);
+
+  const [dateStart, setDateStart] = useState();
+  const [dateEnd, setDateEnd] = useState();
 
   const [projectExists, setProjectExists] = useState(false);
 
@@ -51,6 +55,18 @@ export default function NewProposalForm() {
     setProjectExists(!projectExists);
   }
 
+  function handleDateStart (e) {
+    e.preventDefault();
+
+    setDateStart(e.target.value);
+  }
+
+  function handleDateEnd (e) {
+    e.preventDefault();
+
+    setDateEnd(e.target.value);
+  }
+
   async function handleFormSubmit (e) {
     e.preventDefault();
 
@@ -60,15 +76,15 @@ export default function NewProposalForm() {
       projectStarted: projectExists,    
       proposition: e.target.proposition.value,
       techRequirements: e.target.techRequirements.value, 
-      availabilityStart: e.target.availabilityStart.value,
-      availabilityEnd: e.target.availabilityEnd.value,
+      availabilityStart: dateStart,
+      availabilityEnd: dateEnd,
       contact: e.target.contact.value,
       category: category,
       categorySoftwareDevelopment: categorySoftwareDevelopment,
       categoryDataAnalysis: categoryDataAnalysis,
       categoryDigitalMarketing: categoryDigitalMarketing,
       categoryUxUi: categoryUxUi,
-      owner: context.userData.user._id
+      owner: CONTEXT.userData._id
     }
 
     const response = await fetch(`http://localhost:3000/proposals/createProposal`, {
@@ -82,8 +98,6 @@ export default function NewProposalForm() {
     const data = await response.json();
 
     console.log("Proposal created.", data);
-
-    setContext({proposalData: data});
 
     navigate("/dashboard");
   }
@@ -104,7 +118,7 @@ export default function NewProposalForm() {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Submit your proposal to Upright Capstone
             </h1>
-            <p>(This proposal will be submitted with you, {context.userData.user.firstName}, as the owner.)</p>
+            <p>(This proposal will be submitted with you, {CONTEXT.userData.firstName}, as the owner.)</p>
             <form className="space-y-4 md:space-y-6" onSubmit={(e) => {handleFormSubmit(e)}}>
               <div>
                 <label
@@ -151,7 +165,7 @@ export default function NewProposalForm() {
                   <input
                     id="unassigned"
                     type="radio"
-                    name="unassigned"
+                    name="category"
                     value="unassigned"
                     className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) => {handleCategory(e)}}
@@ -168,7 +182,7 @@ export default function NewProposalForm() {
                   <input
                     id="softwareDevelopment"
                     type="radio"
-                    name="softDev"
+                    name="category"
                     value="softDev"
                     className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) => {handleSoftDev(e)}}
@@ -185,7 +199,7 @@ export default function NewProposalForm() {
                   <input
                     id="digitalMarketing"
                     type="radio"
-                    name="digMark"
+                    name="category"
                     value="digMark"
                     className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) => {handleDigMark(e)}}
@@ -202,7 +216,7 @@ export default function NewProposalForm() {
                   <input
                     id="dataAnalysis"
                     type="radio"
-                    name="datAn"
+                    name="category"
                     value="datAn"
                     className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) => {handleDatAn(e)}}
@@ -219,7 +233,7 @@ export default function NewProposalForm() {
                   <input
                     id="uxUi"
                     type="radio"
-                    name="uxUi"
+                    name="category"
                     value="uxUi"
                     className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) => {handleUxUi(e)}}
@@ -241,7 +255,7 @@ export default function NewProposalForm() {
                 >
                   Proposition - please be as detailed as possible
                 </label>
-                <textarea id="proposition" rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Explain the project..." required="true"></textarea>
+                <textarea id="proposition" rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Explain the project..." required></textarea>
               </div>
 
               <div className="flex items-start">
@@ -267,48 +281,18 @@ export default function NewProposalForm() {
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     What is your availability to sponsor this project for a capstone cohort?
                   </label>
-              <div id="date-range-picker" className="flex items-center">
-                <div className="relative">
-                  <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg
-                      className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                    </svg>
+              <div className="flex items-center">
+                
+                  <div className="inline inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <Datepicker value={dateStart} onChange={(e) => {handleDateStart(e)}}/>
                   </div>
-                  <input
-                    id="availabilityStart"
-                    name="start"
-                    type="text"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Select date start"
-                  ></input>
-                </div>
+                
                 <span className="mx-4 text-gray-500">to</span>
-                <div className="relative">
-                  <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <svg
-                      className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                    </svg>
+                
+                  <div className="inline inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                  <Datepicker value={dateEnd} onChange={(e) => {handleDateEnd(e)}}/>
                   </div>
-                  <input
-                    id="availabilityEnd"
-                    name="end"
-                    type="text"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Select date end"
-                  ></input>
-                </div>
+               
               </div>
 
               <div>
@@ -338,7 +322,7 @@ export default function NewProposalForm() {
                   id="contact"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Contact info"
-                  required="true"
+                  required
                 />
               </div>
 
