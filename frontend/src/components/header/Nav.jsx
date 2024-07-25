@@ -35,7 +35,7 @@ export default function Nav () {
                     border: "0px",
                     borderRadius: "8px",
                     marginRight: "15px",
-                    marginLeft: "590px",
+                    marginLeft: "790px",
                     padding: "5px"
                 }}
                 >

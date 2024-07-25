@@ -9,14 +9,13 @@ export default function Library () {
 
         <>
         <Nav />
-
         <Search />
 
         <h1 style={{
             textAlign: "center",
             fontSize: "60px"
         }}>Capstone Presentation Video Library</h1>
-        <embed src="https://drive.google.com/embeddedfolderview?id=1kka_b7__bJGDVNjCYFoUzSK0E3JIS88D#grid" style={{
+        <embed src="https://drive.google.com/embeddedfolderview?id=1l1xHtaXW6QsVvrYNuYRom5cM6CUuOtrk#grid" style={{
             width:"100%", 
             height:"600px", 
             border:"0"
@@ -31,9 +30,25 @@ export default function Library () {
             marginRight: "50px"
           }}
         >
-          <button type="click" onClick={() => navigate("/")}>
-            Back
-          </button>
+          <button
+                type="click"
+                onClick={() => navigate('/')}
+                style={{
+                    display: "flex",
+                    alignContent: "flex-end",
+                    backgroundColor: "#ff532f",
+                    color: "black",
+                    border: "0px",
+                    borderRadius: "8px",
+                    marginTop: "1px",
+                    marginLeft: "1500px",
+                    marginRight: "15px",
+                    padding: "5px",
+                    paddingBottom: "2px"
+                }}
+                >
+                    Back
+                </button>
         </div>
         </>
     )

@@ -4,7 +4,7 @@ export default function Testimonies () {
 <>
         <div className="grid grid-cols-3 gap-3">
   <div style={{
-                backgroundColor: "#ff532f",
+                backgroundColor: "#1a9988",
                 color: "black",
                 border: "2px solid black",
                 borderRadius: "4px",
@@ -18,7 +18,7 @@ export default function Testimonies () {
     <p>Super helpful! Bright minds willing to go the extra mile to get it exactly the way I wanted!</p> <p><b>- Small Business</b></p> </div>
 
 <div style={{
-                backgroundColor: "#ff532f",
+                backgroundColor: "#1a9988",
                 color: "black",
                 border: "2px solid black",
                 borderRadius: "4px",
@@ -32,7 +32,7 @@ export default function Testimonies () {
 The hectic life of a small business owner was vastly improved by working with this group of inventive minds! <p><b>- Small Business</b></p> </div>
 
 <div style={{
-                backgroundColor: "#ff532f",
+                backgroundColor: "#1a9988",
                 color: "black",
                 border: "2px solid black",
                 borderRadius: "4px",
@@ -46,7 +46,7 @@ The hectic life of a small business owner was vastly improved by working with th
     Totally revamped my entire website to make it fresh and new! I cant thank them enough! <p><b>- Small Business</b></p> </div>
 
 <div style={{
-                backgroundColor: "#ff532f",
+                backgroundColor: "#1a9988",
                 color: "black",
                 border: "2px solid black",
                 borderRadius: "4px",
@@ -60,7 +60,7 @@ The hectic life of a small business owner was vastly improved by working with th
     Super hard working! A great group who goes above and beyond! <p><b>- Small Business</b></p> </div>
 
 <div style={{
-                backgroundColor: "#ff532f",
+                backgroundColor: "#1a9988",
                 color: "black",
                 border: "2px solid black",
                 borderRadius: "4px",
@@ -74,7 +74,7 @@ The hectic life of a small business owner was vastly improved by working with th
     A wonderful group! Always happy to help! <p><b>- Small Business</b></p> </div>
 
 <div style={{
-                backgroundColor: "#ff532f",
+                backgroundColor: "#1a9988",
                 color: "black",
                 border: "2px solid black",
                 borderRadius: "4px",
