@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Label, Radio, Modal, Accordion } from "flowbite-react";
+import { Flowbite, Button, Label, Radio, Modal, Accordion } from "flowbite-react";
 import { customTheme } from "../../flowbiteCustom/Flowbite";
 import CTX from "../header/Context"; //holds user and proposal info for site
 
@@ -179,7 +179,7 @@ export default function ControlPanel() {
         }}
       >
         <svg
-          className="inline w-6 h-6 text-gray-800 dark:text-white"
+          className="inline w-6 h-6 text-gray-800"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -470,7 +470,7 @@ export default function ControlPanel() {
   }
 
   return (
-    <>
+    <Flowbite theme={{ theme: customTheme }}>
       <div
         style={{
           display: "flex-block",
@@ -914,6 +914,6 @@ export default function ControlPanel() {
           </div>
         </div>
       )}
-    </>
+    </Flowbite>
   );
 }

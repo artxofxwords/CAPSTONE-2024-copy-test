@@ -2,6 +2,8 @@
 
 /** @type {import('tailwindcss').Config} */
 const colors = require('tailwindcss/colors')
+// const flowbite = require("flowbite-react/tailwind");
+import flowbite from "flowbite-react/tailwind";
 
 module.exports = {
 
@@ -49,6 +51,7 @@ module.exports = {
   },
   plugins: [
     require('flowbite-typography'),
-    require('flowbite/plugin')]
+    require('flowbite/plugin'),
+    flowbite.plugin()]
 }
 
