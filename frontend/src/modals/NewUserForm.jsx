@@ -1,46 +1,38 @@
 import { useNavigate } from "react-router-dom";
-import {useState} from "react";
+import {useState, useEffect} from "react";
+
+let registrationFailed;
+let usernameTaken;
+let passwordInputType;
 
 export default function NewUserForm() {
   const navigate = useNavigate();
   const [trueCompany, setTrueCompany] = useState(false); //for checkbox on form if rep a company
   const [usState, setUsState] = useState(); //for dropdown state selection
 
+  const [username, setUsername] = useState(undefined); //for checking if username is taken
+  const [viewPassword, setViewPassword] = useState(false); //to view or hide password
+
+  useEffect(() => {
+    if (username) {
+    handleUsernameChange();
+    }
+  }, [username]);
+
   async function handleAccountCreation(e) {
     e.preventDefault();
 
-    const username = e.target.username.value;
-    const password = e.target.password.value;
-    const firstName = e.target.firstName.value;
-    const lastName = e.target.lastName.value;
-    const email = e.target.email.value;
-    const companyName = e.target.companyName.value;
-    const company = trueCompany;
-    const city = e.target.city.value;
-    const state = usState; 
-
-
     const body = {
-        username: username,
-        password: password,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        companyName: companyName,
-        company: company,
-        city: city,
-        state: state
+        username: e.target.username.value,
+        password: e.target.password.value,
+        firstName: e.target.firstName.value,
+        lastName: e.target.lastName.value,
+        email: e.target.email.value,
+        companyName: e.target.companyName.value,
+        company: trueCompany,
+        city: e.target.city.value,
+        state: usState
     }
-
-    console.log(username);
-    console.log(password);
-    console.log(firstName);
-    console.log(lastName);
-    console.log(email);
-    console.log(companyName);
-    console.log(company);
-    console.log(city);
-    console.log(state);
 
     const response = await fetch("http://localhost:3000/users/register", {
         method: "POST",
@@ -53,7 +45,14 @@ export default function NewUserForm() {
     const data = await response.json();
     console.log(data);
 
-    navigate("/Login")
+    //error handling
+    if (response.status === 500) {
+      registrationFailed = <p className="text-red-600">Registration failed. Please try again.</p>
+
+      e.target.reset();
+    } else (
+      navigate("/Login")
+    )
 
 }
 
@@ -69,13 +68,36 @@ function handleState (e) {
   setUsState(e.target.value);
 }
 
+async function handleUsernameChange () {
+  const response = await fetch(`http://localhost:3000/users/${username}`);
+
+  const data = response.json();
+  console.log(data);
+
+    if (response.status === 200) {
+      usernameTaken = <p className="text-red-600">Sorry, this username is taken.</p>
+    } else {
+      usernameTaken = <p className="text-green-500">Username is available.</p>
+    }
+}
+
+if (viewPassword) {
+  passwordInputType = "text"
+} else {
+  passwordInputType = "password"
+}
+
 
   return (
-    <>
-      <section className="bg-gray-50 dark:bg-gray-900">
+    <div style={{
+      display: "flex",
+      justifyContent: "center",
+      width: "98vw"
+    }}>
+      <section className="bg-gray-50 dark:bg-gray-900"><h1 className="text-orange">HI THERE</h1>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-teal md:text-2xl dark:text-white">
               Create an account with Upright Capstone to submit your proposal
             </h1>
             <form className="space-y-4 md:space-y-6" onSubmit={handleAccountCreation}>
@@ -190,6 +212,7 @@ function handleState (e) {
                 </label>
                 <select
                   id="countries"
+                  value={usState}
                   onChange={(e) => {handleState(e)}}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 >
@@ -245,7 +268,6 @@ function handleState (e) {
                   <option>WI</option>
                   <option>WY</option>
                 </select>
-             
 
               <div>
                 <label
@@ -258,11 +280,14 @@ function handleState (e) {
                   type="username"
                   name="username"
                   id="username"
+                  value={username}
+                  onChange={(e) => {setUsername(e.target.value)}}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="username"
                   required
                 />
               </div>
+              {usernameTaken}
               <div>
                 <label
                   htmlFor="password"
@@ -270,22 +295,35 @@ function handleState (e) {
                 >
                   Password
                 </label>
+                <div style={{
+                  display: "inline-flex",
+                  flexDirection: "row"
+                }}>
                 <input
-                  type="password"
+                  type={passwordInputType}
                   name="password"
                   id="password"
                   placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="inline bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
                 />
+                <svg onClick={() => {setViewPassword(!viewPassword)}} className="inline w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" strokeWidth="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"/>
+  <path stroke="currentColor" strokeWidth="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+</svg>
+</div>
+
               </div>
               
               <button
                 type="submit"
-                className="w-full text-black bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="w-full text-black bg-orange hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
-                Create an account
+                Create account
               </button>
+
+              {registrationFailed}
+
               <p className="text-center text-sm font-light text-gray-500 dark:text-gray-400">
                 Already have an account?{" "}
                 <a
@@ -299,6 +337,6 @@ function handleState (e) {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }
