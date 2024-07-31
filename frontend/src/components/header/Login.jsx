@@ -29,6 +29,10 @@ export default function Login() {
     });
 
     const userData = await response.json();
+    console.log("User Data: ", userData);
+
+    //store user info
+    localStorage.setItem("jwtToken", userData.token);
 
     //error handling
     if (response.status === 204) {
@@ -39,8 +43,6 @@ export default function Login() {
       e.target.reset();
     } else {
       localStorage.setItem("jwtToken", userData.token);
-
-      // CONTEXT.setUserData(userData);
 
       //nav user based on auth
       if (userData.user.isAdmin === true) {

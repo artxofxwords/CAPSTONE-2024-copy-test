@@ -120,3 +120,14 @@ exports.deleteProposal = async (req, res) => {
         }
     }
 }
+
+exports.displayUserProposal = async (req, res) => {
+    try {
+        const test = await Proposal.find({owner: req.params.owner});
+        
+        res.status(200).json(test)
+    } catch (err) {
+        console.log(req.params.owner)
+        res.status(500).json("Proposal Not Found")
+    }
+}
