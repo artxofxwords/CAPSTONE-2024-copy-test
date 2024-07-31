@@ -1,7 +1,5 @@
 // Import the schema needed
 require("dotenv").config();
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 const Proposal = require("../models/proposal");
 
 exports.displayAllProposal = async (req, res) => {
@@ -69,7 +67,7 @@ exports.createProposal = async (req, res) => {
 
 
 exports.updateProposal = async (req, res) => {
-
+ 
     try {
 
             const replacingProposal = {
@@ -96,6 +94,9 @@ exports.updateProposal = async (req, res) => {
             }
 
             await Proposal.findOneAndUpdate({_id: req.params._id}, replacingProposal);
+
+            const isAdmin = req.user.isAdmin;
+            const userId = req.user._id;
 
             res.status(201).json(replacingProposal);
         } catch (err) {
