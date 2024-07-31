@@ -1,11 +1,11 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {Datepicker} from "flowbite-react";
-import CTX from "../components/header/Context"; //holds user and proposal info for site
+import {jwtDecode} from "jwt-decode";
 
 export default function NewProposalForm() {
   const navigate = useNavigate();
-  const CONTEXT = useContext(CTX);
+  const yourJwtToken = localStorage.getItem("jwtToken");
+  const decoded = jwtDecode(yourJwtToken);
 
   const [category, setCategory] = useState(false);
   const [categorySoftwareDevelopment, setCategorySoftwareDevelopment] = useState(false); 
@@ -84,7 +84,7 @@ export default function NewProposalForm() {
       categoryDataAnalysis: categoryDataAnalysis,
       categoryDigitalMarketing: categoryDigitalMarketing,
       categoryUxUi: categoryUxUi,
-      owner: CONTEXT.userData._id
+      owner: decoded._id
     }
 
     const response = await fetch(`http://localhost:3000/proposals/createProposal`, {
@@ -107,16 +107,14 @@ export default function NewProposalForm() {
     <>
       <div
       style={{
-        width: "45vw",
+        width: "auto",
         height: "80vh",
-        margin: "15px",
         display: "flex",
         marginLeft: "auto",
         marginRight: "auto",
-        border: "2px solid black",
-        // textAlign: "center",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "start",
+        overflow: "auto"
       }}
     >
       <section className="bg-gray-50 dark:bg-gray-900">
@@ -125,7 +123,7 @@ export default function NewProposalForm() {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Submit your proposal to Upright Capstone
             </h1>
-            <p>(This proposal will be submitted with you, {CONTEXT.userData.firstName}, as the owner.)</p>
+            <p>(This proposal will be submitted with you as the owner.)</p>
 
 
             <form className="space-y-4 md:space-y-6" onSubmit={(e) => {handleFormSubmit(e)}}>
@@ -291,17 +289,9 @@ export default function NewProposalForm() {
                     What is your availability to sponsor this project for a capstone cohort?
                   </label>
               <div className="flex items-center">
-                
-                  <div className="inline inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                    <Datepicker value={dateStart} onChange={(e) => {handleDateStart(e)}}/>
-                  </div>
-                
+                <input value={dateStart} onChange={(e) => {handleDateStart(e)}} placeholder="MM/DD/YYYY" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
                 <span className="mx-4 text-gray-500">to</span>
-                
-                  <div className="inline inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                  <Datepicker value={dateEnd} onChange={(e) => {handleDateEnd(e)}}/>
-                  </div>
-               
+                <input value={dateEnd} onChange={(e) => {handleDateEnd(e)}} placeholder="MM/DD/YYYY" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
               </div>
 
               <div>

@@ -1,22 +1,24 @@
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
 
-function authentication (req, res, next) {
-    const token = req.header("Authorization").replace("Bearer ", '');
+async function authentication (req, res, next) {
+    const token = req.header.authorization;
 
     if (!token) {
-        return res.status(400).json({ message: "Access denied!" });
+        return res.status(400).json("Access denied!");
     }
 
     try {
         const verifyToken = jwt.verify(token, process.env.SECRET_KEY);
-        req.body._id = verifyToken.id;
-        req.body.isAdmin = verifyToken.isAdmin;
-        console.log(`Auth User Id: ${req.body._id}, Admin Status: ${req.body.isAdmin}`);
+
+        const user = await user.findById(verifyToken._id); //set user info object
+
+        req.user = user; //allow access for any route after "next()" to user info object by calling res.user
+
+        console.log(`Auth User Id: ${req.user._id}, Admin Status: ${req.user.isAdmin}`);
 
         next();
     } catch (err) {
-        res.status(400).json({ message: "Invalid token "});
+        res.status(400).json({ERROR: err.message});
     }
 };
 

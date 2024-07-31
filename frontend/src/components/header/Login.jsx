@@ -1,12 +1,16 @@
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import CTX from "./Context";
 
-let loginFailed;
+//https://medium.com/@manishmanice2003/using-environment-variables-in-your-front-end-react-app-bd418b3258a8
+// const SERVER = import.meta.env.VITE_server;
+
+// import { useContext } from "react";
+// import CTX from "../main/Context"; //holds user info for site
+
+let loginFailed; //for error code if login fails
 
 export default function Login() {
-  const navigate = useNavigate();
-  const CONTEXT = useContext(CTX);
+  const navigate = useNavigate(); //to direct user based on credentials (admin or sponsor)
+  // const CONTEXT = useContext(CTX);
 
   async function handleAccountLogin(e) {
     e.preventDefault();
@@ -16,7 +20,7 @@ export default function Login() {
       password: e.target.password.value,
     };
 
-    const response = await fetch("http://localhost:3000/users/login", {
+    const response = await fetch(`http://localhost:3000/users/login`, {
       method: "POST",
       body: JSON.stringify(body),
       headers: {
@@ -28,22 +32,26 @@ export default function Login() {
     console.log("User Data: ", userData);
 
     //store user info
-    CONTEXT.setUserData(userData.user);
     localStorage.setItem("jwtToken", userData.token);
 
     //error handling
     if (response.status === 204) {
-      loginFailed = <p>Login failed. Please try again.</p>
+      loginFailed = (
+        <p className="text-red-600">Login failed. Please try again.</p>
+      );
 
       e.target.reset();
     } else {
-        //nav user based on auth
-        if (CONTEXT.userData.isAdmin === true) {
-          navigate("/controlpanel");
-        } else {
-          navigate("/dashboard");
-        }
+
+      localStorage.setItem("jwtToken", userData.token);
+
+      //nav user based on auth
+      if (userData.user.isAdmin === true) {
+        navigate("/controlpanel");
+      } else {
+        navigate("/dashboard");
       }
+    }
   }
 
   return (
@@ -56,8 +64,6 @@ export default function Login() {
           paddingBottom: "34vh"
         }}
       >
-        
-
 <form onSubmit={handleAccountLogin} className="max-w-sm mx-auto">
   <div className="mb-5"><h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-black-900 md:text-5xl lg:text-6xl dark:text-white">Login</h1>
     <label htmlFor="username" className="block mb-2 text-sm font-medium text-black-900 dark:text-orange">Username</label>
@@ -83,6 +89,7 @@ export default function Login() {
                   Register here
                 </a>
               </p>
+
       </div>
     </>
   );

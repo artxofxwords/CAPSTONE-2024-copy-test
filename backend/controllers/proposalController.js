@@ -1,7 +1,5 @@
 // Import the schema needed
 require("dotenv").config();
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 const Proposal = require("../models/proposal");
 
 exports.displayAllProposal = async (req, res) => {
@@ -69,7 +67,7 @@ exports.createProposal = async (req, res) => {
 
 
 exports.updateProposal = async (req, res) => {
-
+ 
     try {
 
             const replacingProposal = {
@@ -97,6 +95,9 @@ exports.updateProposal = async (req, res) => {
 
             await Proposal.findOneAndUpdate({_id: req.params._id}, replacingProposal);
 
+            const isAdmin = req.user.isAdmin;
+            const userId = req.user._id;
+
             res.status(201).json(replacingProposal);
         } catch (err) {
             console.log("Something went wrong. Could not update proposal");
@@ -117,5 +118,16 @@ exports.deleteProposal = async (req, res) => {
             console.log(`Error Occured. Please try again`);
             res.status(500).json(`Error Occured. Please try again`);
         }
+    }
+}
+
+exports.displayUserProposal = async (req, res) => {
+    try {
+        const test = await Proposal.find({owner: req.params.owner});
+        
+        res.status(200).json(test)
+    } catch (err) {
+        console.log(req.params.owner)
+        res.status(500).json("Proposal Not Found")
     }
 }

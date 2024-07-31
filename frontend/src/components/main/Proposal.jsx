@@ -1,6 +1,9 @@
 import { useNavigate } from "react-router-dom";
+
 import Nav from "../header/Nav";
 import NewProposalForm from "../../modals/NewProposalForm";
+import CTX from "../header/Context";
+import ProposalStatus from "../header/proposalStatus";
 
 export default function Proposal() {
     const navigate = useNavigate();
@@ -15,32 +18,13 @@ export default function Proposal() {
         }}>
             Please Fill out the form to submit a proposal!
         </h1>
+
         <div
                 style={{
-                    // border: "5px solid black",
-                    // display: "grid",
-                    // gridTemplateColumns: "repeat(4, 1fr)",
-                    // gap: "10px",
-                    // width: "80%",
-                    // maxWidth: "80%",
-                    // justifyContent: "center",
-                    // alignItems: "center",
-                    // marginLeft: "10%",
-                    // textAlign: "center"
                 }}>
-                    {/* <div>
-                        Software Engineering
-                    </div>
-                    <div>
-                        Data Analytics
-                    </div>
-                    <div>
-                        UI/UX Design
-                    </div>
-                    <div>
-                        Digital Marketing
-                    </div> */}
+
         </div>
+
         <NewProposalForm />
         <div
         style={{
@@ -61,7 +45,7 @@ export default function Proposal() {
             </div>
             <div
             className="propsosalStatus">
-                
+                <ProposalStatus />
             </div>
         </>
     )
