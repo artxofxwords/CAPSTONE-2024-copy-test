@@ -1,6 +1,5 @@
 import Nav from "./Nav.jsx";
-import {Button} from "flowbite-react";
-import {customTheme} from "../../flowbiteCustom/Flowbite.js";
+import uprightLogo from "../../assets/PoweredByUpright.png"
 
 export default function Header() {
     
@@ -45,13 +44,18 @@ export default function Header() {
               a team within that cohort who you&apos;ll meet with to discuss your vision. You&apos;ll work closely with your team for a month long capstone to bring your 
               idea to life!
             </p>
-            <div style={{display: "flex", justifyContent: "center"}}>
-            <Button theme={customTheme} color="primary"><a
+            <button><a
             href="https://www.uprighted.com/courses"
             target="_blank"
-            >
-              Learn more!
-            </a></Button></div>
+              style={{
+                backgroundColor: "#ff532f",
+                color: "black",
+                border: "0px",
+                borderRadius: "8px",
+                padding: "2px"
+              }}
+            > Learn more!
+          </a></button>
           </div>
 
           <div style={{
@@ -62,9 +66,9 @@ export default function Header() {
             alignItems: "center"
           }}>
           <img
-            width="300px"
-            height="200px"
-            src="https://cdn.prod.website-files.com/64921323294d7b037da1a52c/649b14c49b4e1c2fd060f3f2_Upright-logo.svg"
+            width="400px"
+            height="400px"
+            src={uprightLogo} alt="uprightLogo"
           >
           </img>
           

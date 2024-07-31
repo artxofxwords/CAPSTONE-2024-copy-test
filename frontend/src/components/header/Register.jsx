@@ -9,9 +9,10 @@ export default function Register() {
     <>
       <div
         style={{
-          width: "45vw",
-          height: "80vh",
-          margin: "15px",
+          backgroundColor: "#1b3b50",
+          alignContent: "center",
+          paddingTop: "20vh",
+          paddingBottom: "34vh"
         }}
       >
           <NewUserForm />
