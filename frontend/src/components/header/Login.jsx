@@ -41,7 +41,7 @@ export default function Login() {
         if (CONTEXT.userData.isAdmin === true) {
           navigate("/controlpanel");
         } else {
-          navigate("/controlpanel");
+          navigate("/dashboard");
         }
       }
   }
@@ -50,20 +50,21 @@ export default function Login() {
     <>
       <div
         style={{
-          width: "95vw",
-          height: "80vh",
+          backgroundColor: "#1b3b50",
           alignContent: "center",
+          paddingTop: "20vh",
+          paddingBottom: "34vh"
         }}
       >
         
 
 <form onSubmit={handleAccountLogin} className="max-w-sm mx-auto">
-  <div className="mb-5"><h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Login</h1>
-    <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+  <div className="mb-5"><h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-black-900 md:text-5xl lg:text-6xl dark:text-white">Login</h1>
+    <label htmlFor="username" className="block mb-2 text-sm font-medium text-black-900 dark:text-orange">Username</label>
     <input type="username" id="username" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
   </div>
   <div className="mb-5">
-    <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+    <label htmlFor="password" className="block mb-2 text-sm font-medium text-black-900 dark:text-orange">Password</label>
     <input type="password" id="password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
   </div>
   <div className="flex items-start mb-5">
@@ -73,7 +74,7 @@ export default function Login() {
       </div>
 </form>
 {loginFailed}
-<p className="text-center text-sm font-light text-gray-500 dark:text-gray-400">
+<p className="text-center text-sm font-light text-orange-500 dark:text-orange-400">
                 Don&apos;t have an account?{" "}
                 <a
                   href="/register"
