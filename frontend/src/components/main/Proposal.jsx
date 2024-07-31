@@ -1,9 +1,13 @@
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react"
 import Nav from "../header/Nav";
 import NewProposalForm from "../../modals/NewProposalForm";
+import CTX from "../header/Context";
+import ProposalStatus from "../header/proposalStatus";
 
 export default function Proposal() {
     const navigate = useNavigate();
+    const CONTEXT = useContext(CTX);
 
     return (
         <>
@@ -17,29 +21,8 @@ export default function Proposal() {
         </h1>
         <div
                 style={{
-                    // border: "5px solid black",
-                    // display: "grid",
-                    // gridTemplateColumns: "repeat(4, 1fr)",
-                    // gap: "10px",
-                    // width: "80%",
-                    // maxWidth: "80%",
-                    // justifyContent: "center",
-                    // alignItems: "center",
-                    // marginLeft: "10%",
-                    // textAlign: "center"
                 }}>
-                    {/* <div>
-                        Software Engineering
-                    </div>
-                    <div>
-                        Data Analytics
-                    </div>
-                    <div>
-                        UI/UX Design
-                    </div>
-                    <div>
-                        Digital Marketing
-                    </div> */}
+
         </div>
         <NewProposalForm />
         <div
@@ -61,7 +44,7 @@ export default function Proposal() {
             </div>
             <div
             className="propsosalStatus">
-                
+                <ProposalStatus />
             </div>
         </>
     )

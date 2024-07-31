@@ -28,8 +28,9 @@ export default function Login() {
     console.log("User Data: ", userData);
 
     //store user info
-    CONTEXT.setUserData(userData.user);
+    // CONTEXT.setUserData(userData);
     localStorage.setItem("jwtToken", userData.token);
+    localStorage.setItem("userInfo", userData.user._id)
 
     //error handling
     if (response.status === 204) {
@@ -41,7 +42,7 @@ export default function Login() {
         if (CONTEXT.userData.isAdmin === true) {
           navigate("/controlpanel");
         } else {
-          navigate("/controlpanel");
+          navigate("/dashboard");
         }
       }
   }
