@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react"
+
 import Nav from "../header/Nav";
 import NewProposalForm from "../../modals/NewProposalForm";
 import CTX from "../header/Context";
@@ -7,7 +7,6 @@ import ProposalStatus from "../header/proposalStatus";
 
 export default function Proposal() {
     const navigate = useNavigate();
-    const CONTEXT = useContext(CTX);
 
     return (
         <>
@@ -19,11 +18,13 @@ export default function Proposal() {
         }}>
             Please Fill out the form to submit a proposal!
         </h1>
+
         <div
                 style={{
                 }}>
 
         </div>
+
         <NewProposalForm />
         <div
         style={{

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-// const authentication = require("../middleware/authentication");
-// const authorization = require("../middleware/authorization");
+const authentication = require("../middleware/authentication");
+
 
 //import proposal controller
 const proposalController = require("../controllers/proposalController");
@@ -16,11 +16,12 @@ router.get("/displayProposal/:_id", proposalController.displayProposal);
 router.post("/createProposal", proposalController.createProposal);
 
 // Update proposal with id
-router.put("/updateProposal/:_id", proposalController.updateProposal);
+router.put("/updateProposal/:_id", authentication, proposalController.updateProposal);
 
 // Delete proposal with id
-router.delete("/deleteProposal/:_id", proposalController.deleteProposal);
+router.delete("/deleteProposal/:_id", authentication, proposalController.deleteProposal); 
 
 router.get("/displayUserProposal/:owner", proposalController.displayUserProposal);
+
 
 module.exports = router;

@@ -6,11 +6,12 @@ let usernameTaken;
 let passwordInputType;
 
 export default function NewUserForm() {
+  const yourJwtToken = localStorage.getItem("jwtToken");
   const navigate = useNavigate();
   const [trueCompany, setTrueCompany] = useState(false); //for checkbox on form if rep a company
   const [usState, setUsState] = useState(); //for dropdown state selection
 
-  const [username, setUsername] = useState(undefined); //for checking if username is taken
+  const [username, setUsername] = useState(""); //for checking if username is taken
   const [viewPassword, setViewPassword] = useState(false); //to view or hide password
 
   useEffect(() => {
@@ -34,11 +35,12 @@ export default function NewUserForm() {
         state: usState
     }
 
-    const response = await fetch("http://localhost:3000/users/register", {
+    const response = await fetch(`http://localhost:3000/users/register`, {
         method: "POST",
         body: JSON.stringify(body),
         headers: {
-            'Content-Type': "application/json"
+            'Content-Type': "application/json",
+            Authorization: yourJwtToken
         }
     });
 
@@ -69,10 +71,13 @@ function handleState (e) {
 }
 
 async function handleUsernameChange () {
-  const response = await fetch(`http://localhost:3000/users/${username}`);
-
-  const data = response.json();
+  const response = await fetch (`http://localhost:3000/users/check/${username}`);
+  const data = await response.json();
   console.log(data);
+
+    if (!data) {
+      usernameTaken = <p className="text-green-500">Username is available.</p>
+    }
 
     if (response.status === 200) {
       usernameTaken = <p className="text-red-600">Sorry, this username is taken.</p>
@@ -94,7 +99,7 @@ if (viewPassword) {
       justifyContent: "center",
       width: "98vw"
     }}>
-      <section className="bg-gray-50 dark:bg-gray-900"><h1 className="text-orange">HI THERE</h1>
+      <section className="bg-gray-50 dark:bg-gray-900">
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-teal md:text-2xl dark:text-white">
@@ -281,7 +286,7 @@ if (viewPassword) {
                   name="username"
                   id="username"
                   value={username}
-                  onChange={(e) => {setUsername(e.target.value)}}
+                  onChange={e => setUsername(e.target.value)}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="username"
                   required

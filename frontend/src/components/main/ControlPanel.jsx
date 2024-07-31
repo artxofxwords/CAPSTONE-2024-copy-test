@@ -1,27 +1,32 @@
-import { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { Flowbite, Button, Label, Radio, Modal, Accordion } from "flowbite-react";
-import { customTheme } from "../../flowbiteCustom/Flowbite";
-import CTX from "../header/Context"; //holds user and proposal info for site
+import { useState, useEffect } from "react";
+import {jwtDecode} from "jwt-decode";
+import {
+  Button,
+  Label,
+  Radio
+} from "flowbite-react";
 
-//set variables for conditional rendering
-let readIcon;
-let deleteIcon;
+import ViewProposalFormModal from "./ControlPanel/ViewProposalFormModal";
+import AllUsersDrawer from "../main/ControlPanel/AllUsersDrawer";
+import AllProposalsModal from "./ControlPanel/AllProposalsModal";
+import AssignAdminModal from "./ControlPanel/AssignAdminModal";
+import PropByCatAccordion from "./ControlPanel/PropByCatAccordion";
+import MarkAsReadButton from "./ControlPanel/MarkAsReadButton";
+import Logout from "../header/Logout";
+import DeleteProposalModal from "./ControlPanel/DeleteProposalModal";
 
 export default function ControlPanel() {
-  const navigate = useNavigate();
-  const CONTEXT = useContext(CTX);
   const yourJwtToken = localStorage.getItem("jwtToken");
+  //https://www.npmjs.com/package/jwt-decode
+  const decoded = jwtDecode(yourJwtToken);
 
   //useState variables
+  const [userInfo, setUserInfo] = useState([]); //userInfo that persists
+  const [userInfoLoaded, setUserInfoLoaded] = useState(false); //stops page from loading till userInfo fetched
+  
   const [allProposals, setAllProposals] = useState([]); //list of all proposals from database
   const [unreadProposals, setUnreadProposals] = useState([]); //list of all unread proposals based on "read = true or false"
   const [priorityProposals, setPriorityProposals] = useState([]); //list of top five proposals sorted by sponser availability date
-  const [softDevProposals, setSoftDevProposals] = useState([]);
-  const [digMarkProposals, setDigMarkroposals] = useState([]);
-  const [datAnProposals, setDatAnProposals] = useState([]);
-  const [uxUiProposals, setUxUiProposals] = useState([]);
-  const [noCategoryProposals, setNoCategoryProposals] = useState([]);
 
   const [currentProposal, setCurrentProposal] = useState(); //clicked proposal, fetches by id to display details
   const [currentProposalOwnerInfo, setCurrentProposalOwnerInfo] = useState([]); //sponsor info for selected proposal
@@ -32,7 +37,6 @@ export default function ControlPanel() {
   const [categoryUxUi, setCategoryUxUi] = useState(false);
   const [categoryAssigned, setCategoryAssigned] = useState(false);
 
-  const [readProposal, setReadProposal] = useState(false); //mark proposal as read once reviewed
   const [deleteProposal, setDeleteProposal] = useState(false); //shows delete proposal popup to confirm delete
 
   const [statusUnderReview, setStatusUnderReview] = useState(false); //mark under review once proposal is opened
@@ -42,13 +46,16 @@ export default function ControlPanel() {
 
   //useEffect functions
   useEffect(() => {
+    setPersistingCurrentUserObject() //user info persists with refresh
+  }, []);
+
+  useEffect(() => {
     getAllProposals(); //stays on top of changing proposals list
   }, []);
 
   useEffect(() => {
     allUnreadProposals(); //rerenders unread list
     sortProposalsByPriority(); //rerenders priority list
-    sortProposalsByCategory(); //rerenders category lists
   }, [allProposals]);
 
   useEffect(() => {
@@ -58,16 +65,22 @@ export default function ControlPanel() {
   }, [currentProposal]);
 
   //functions
-  //fetches all proposals
-  async function getAllProposals() {
-    console.log("CONTEXT.userData:", CONTEXT.userData);
-
-    const response = await fetch(
-      "http://localhost:3000/proposals/displayAllProposal"
-    );
+  async function setPersistingCurrentUserObject() {
+    const response = await fetch(`http://localhost:3000/users/${decoded._id}`);
 
     const data = await response.json();
-    console.log("all proposals fetched: ", data);
+    console.log("Persistent user data:", data);
+
+    setUserInfo(data);
+    setUserInfoLoaded(true);
+  }
+
+  //fetches all proposals
+  async function getAllProposals() {
+    const response = await fetch(
+      `http://localhost:3000/proposals/displayAllProposal`);
+
+    const data = await response.json();
     setAllProposals(data);
   }
 
@@ -81,7 +94,6 @@ export default function ControlPanel() {
           unreadProposalsList.push(item);
         }
       }
-      console.log("unread proposals list: ", unreadProposalsList);
       setUnreadProposals(unreadProposalsList);
     } catch (err) {
       console.log(err);
@@ -94,43 +106,9 @@ export default function ControlPanel() {
       (a, b) => new Date(a.availabilityStart) - new Date(b.availabilityStart)
     );
 
-    console.log("sorted priority proposals: ", sortedProposals);
     sortedProposals.splice(5);
 
     setPriorityProposals(sortedProposals);
-  }
-
-  //display proposals by category
-  async function sortProposalsByCategory() {
-    const softDev = [];
-    const digMark = [];
-    const datAn = [];
-    const uxUi = [];
-    const noCategory = [];
-
-    try {
-      for (const item of allProposals) {
-        if (item.categorySoftwareDevelopment === true) {
-          softDev.push(item);
-        } else if (item.categoryDigitalMarketing === true) {
-          digMark.push(item);
-        } else if (item.categoryDataAnalytics === true) {
-          datAn.push(item);
-        } else if (item.categoryUxUi === true) {
-          uxUi.push(item);
-        } else if (item.category === false) {
-          noCategory.push(item);
-        }
-      }
-
-      setSoftDevProposals(softDev);
-      setDigMarkroposals(digMark);
-      setDatAnProposals(datAn);
-      setUxUiProposals(uxUi);
-      setNoCategoryProposals(noCategory);
-    } catch (err) {
-      console.log(err);
-    }
   }
 
   //onClick of any project in various lists, proposal appears in 'Project Detail View' with project details
@@ -139,17 +117,48 @@ export default function ControlPanel() {
 
     setDeleteProposal(false);
     setCurrentProposal(proposal);
-    console.log(proposal);
+  }
+
+  async function handleProposalClose(e) {
+    e.preventDefault();
+
+    setCurrentProposal(null);
   }
 
   //once currentProposal is set, specific proposal things...
   let projectInProgress;
+  let currentCategory;
+  let currentStatus;
 
   if (currentProposal) {
     if (currentProposal.projectStarted) {
       projectInProgress = <span>Project is already underway.</span>;
     } else {
       projectInProgress = <span>Project is not started.</span>;
+    }
+
+    if (currentProposal.category === false) {
+      currentCategory = <p>No Category</p>;
+    } else if (currentProposal.categorySoftwareDevelopment) {
+      currentCategory = <p>Software Development</p>;
+    } else if (currentProposal.categoryDataAnalytics) {
+      currentCategory = <p>Data Analytics</p>;
+    } else if (currentProposal.categoryDigitalMarketing) {
+      currentCategory = <p>Digital Marketing</p>;
+    } else if (currentProposal.categoryUxUi) {
+      currentCategory = <p>UX/UI</p>;
+    }
+
+    if (currentProposal.submittedStatus) {
+      currentStatus = <p>Submitted</p>;
+    } else if (currentProposal.underReviewStatus) {
+      currentStatus = <p>Under Review</p>;
+    } else if (currentProposal.ongoingStatus) {
+      currentStatus = <p>Ongoing</p>;
+    } else if (currentProposal.approvedStatus) {
+      currentStatus = <p>Approved</p>;
+    } else if (currentProposal.deniedStatus) {
+      currentStatus = <p>Denied</p>;
     }
   }
 
@@ -166,135 +175,27 @@ export default function ControlPanel() {
     setCurrentProposalOwnerInfo(data);
   }
 
-  //set button for current proposal with closed/open envelope icon to 'mark as read/unread'
-  if (readProposal === false) {
-    readIcon = (
-      <button
-        type="click"
-        style={{
-          marginLeft: "25px",
-        }}
-        onClick={(e) => {
-          handleMarkAsReadProposal(e);
-        }}
-      >
-        <svg
-          className="inline w-6 h-6 text-gray-800"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke="orange"
-            strokeLinecap="round"
-            strokeWidth="2"
-            d="m3.5 5.5 7.893 6.036a1 1 0 0 0 1.214 0L20.5 5.5M4 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z"
-          />
-        </svg>
-        Mark As Read
-      </button>
-    );
-  }
-
-  //handles user click on mark proposal as read
-  async function handleMarkAsReadProposal(e) {
-    e.preventDefault();
-
-    let body;
-
-    if (readProposal) {
-      body = {
-        _id: CONTEXT.userData._id,
-        isAdmin: CONTEXT.userData.isAdmin,
-        read: false,
-      };
-    } else {
-      body = {
-        _id: CONTEXT.userData._id,
-        isAdmin: CONTEXT.userData.isAdmin,
-        read: true,
-      };
-    }
-
-    const response = await fetch(
-      `http://localhost:3000/proposals/updateProposal/${currentProposal._id}`,
-      {
-        method: "PUT",
-        body: JSON.stringify(body),
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${yourJwtToken}`,
-        },
-      }
-    );
-
-    const data = await response.json();
-
-    setReadProposal(!readProposal);
-    console.log("Proposal marked as read.", data);
-
-    readIcon = (
-      <button
-        type="click"
-        style={{
-          marginLeft: "25px",
-        }}
-        onClick={(e) => {
-          handleMarkAsReadProposal(e);
-        }}
-      >
-        <svg
-          className="inline w-6 h-6 text-gray-800"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke="orange"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8m18 0-8.029-4.46a2 2 0 0 0-1.942 0L3 8m18 0-9 6.5L3 8"
-          />
-        </svg>
-        Mark As Unread
-      </button>
-    );
-
-    getAllProposals();
-  }
-
   //function for state variables to hold category assignment until "save changes"
   function handleCategorySoftwareDevelopment(e) {
     e.preventDefault();
-
     setCategorySoftDev(!categorySoftDev);
     setCategoryAssigned(true);
   }
 
   function handleCategoryDigitalMarketing(e) {
     e.preventDefault();
-
     setCategoryDigMark(!categoryDigMark);
     setCategoryAssigned(true);
   }
 
   function handleCategoryDataAnalytics(e) {
     e.preventDefault();
-
     setCategoryDatAn(!categoryDatAn);
     setCategoryAssigned(true);
   }
 
   function handleCategoryUxUi(e) {
     e.preventDefault();
-
     setCategoryUxUi(!categoryUxUi);
     setCategoryAssigned(true);
   }
@@ -302,25 +203,21 @@ export default function ControlPanel() {
   //functions for state variables to hold admin selections until "save changes" is clicked for put request
   function handleStatusUnderReview(e) {
     e.preventDefault();
-
     setStatusUnderReview(!statusUnderReview);
   }
 
   function handleStatusOngoing(e) {
     e.preventDefault();
-
     setStatusOngoing(!statusOngoing);
   }
 
   function handleStatusApproved(e) {
     e.preventDefault();
-
     setStatusApproved(!statusApproved);
   }
 
   function handleStatusDenied(e) {
     e.preventDefault();
-
     setStatusDenied(!statusDenied);
   }
 
@@ -329,9 +226,8 @@ export default function ControlPanel() {
     e.preventDefault();
 
     const body = {
-      _id: CONTEXT.userData._id,
-      isAdmin: CONTEXT.userData.isAdmin,
-      read: readProposal,
+      _id: userInfo._id,
+      isAdmin: userInfo.isAdmin,
       category: categoryAssigned,
       categorySoftwareDevelopment: categorySoftDev,
       categoryDigitalMarketing: categoryDigMark,
@@ -350,152 +246,49 @@ export default function ControlPanel() {
         body: JSON.stringify(body),
         headers: {
           "Content-type": "application/json",
-          Authorization: `Bearer ${yourJwtToken}`,
+          Authorization: {yourJwtToken}
         },
       }
     );
 
     const data = await response.json();
-    console.log("updated proposal status: ", data);
-
-    getAllProposals();
-  }
-
-  //set button for current proposal with delete icon to 'delete proposal'
-  if (deleteProposal === false) {
-    deleteIcon = (
-      <button
-        type="click"
-        style={{
-          marginLeft: "10px",
-        }}
-        onClick={(e) => {
-          handleClickProposalDelete(e);
-        }}
-      >
-        <svg
-          className="inline w-6 h-6 text-gray-800"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          fill="orange"
-          viewBox="0 0 24 24"
-        >
-          <path
-            fillRule="evenodd"
-            d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z"
-            clipRule="evenodd"
-          />
-        </svg>
-        Delete Proposal
-      </button>
-    );
-  } else {
-    deleteIcon = (
-      <div>
-        <Modal
-          show={deleteProposal}
-          onClose={() => setDeleteProposal(false)}
-        >
-          <Modal.Header>Confirm Proposal Deletion</Modal.Header>
-          <Modal.Body>
-            <div className="space-y-6">
-              <p className="text-base leading-relaxed text-gray-500">
-                Are you sure you want to delete this{" "}
-                {currentProposal.companyName} proposal?
-              </p>
-              <p className="text-base leading-relaxed text-gray-500">
-                Action cannot be undone. This will delete the proposal
-                completely from the database.
-              </p>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              theme={customTheme}
-              color="primary"
-              onClick={(e) => {
-                handleDeleteProposal(e);
-              }}
-            >
-              Yes, I&apos;m sure. Delete proposal.
-            </Button>
-            <Button
-              color="gray"
-              onClick={(e) => {
-                handleClickProposalDelete(e);
-              }}
-            >
-              No, cancel deletion.
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </div>
-    );
-  }
-
-  //admin clicks on delete button for current proposal
-  function handleClickProposalDelete(e) {
-    e.preventDefault();
-
-    setDeleteProposal(!deleteProposal);
-  }
-
-  //handles admin saving all state variables to database
-  async function handleDeleteProposal(e) {
-    e.preventDefault();
-
-    const body = {
-      _id: CONTEXT.userData._id,
-      isAdmin: CONTEXT.userData.isAdmin,
-    };
-
-    const response = await fetch(
-      `http://localhost:3000/proposals/updateProposal/${currentProposal._id}`,
-      {
-        method: "DELETE",
-        body: JSON.stringify(body),
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${yourJwtToken}`,
-        },
-      }
-    );
-
-    const data = await response.json();
-    console.log("deleted proposal status: ", data);
 
     getAllProposals();
   }
 
   return (
-    <Flowbite theme={{ theme: customTheme }}>
       <div
         style={{
           display: "flex-block",
-          margin: "2vw",
+          margin: "2vw"
         }}
       >
-        <h1
+        {userInfoLoaded && (
+          <div><h1
           style={{
             fontSize: "60px",
+            marginBottom: "3vh"
           }}
         >
-          Welcome, {CONTEXT.userData.firstName}!
+          Upright Capstone | Admin Dashboard
         </h1>
-        <h4>
-          <button
-            type="click"
-            onClick={() => {
-              navigate("/proposal");
-            }}
-            style={{ color: "white" }}
-          >
-            Submit a Proposal
-          </button>
-        </h4>
-      </div>
+        </div>
+        )}
+
+        <div className="flex space-x-4">
+          <ViewProposalFormModal />
+
+          <AllUsersDrawer userInfo={userInfo}/>
+
+          <AllProposalsModal allProposals={allProposals} handleProposalClick={handleProposalClick}/>
+
+          <AssignAdminModal />
+
+          <span className="italic text-3xl font-semibold text-pink-400">Hi, {userInfo.firstName}!</span>
+
+          <Logout />
+        </div>
+
       <div
         style={{
           display: "flex",
@@ -515,7 +308,7 @@ export default function ControlPanel() {
             display: "inline",
           }}
         >
-          <a className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-blue-200">
+          <div className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-blue-200">
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
               Unread Proposals
             </h5>
@@ -534,14 +327,14 @@ export default function ControlPanel() {
                 </li>
               ))}
             </ul>
-          </a>
+          </div>
         </div>
         <div
           style={{
             display: "inline",
           }}
         >
-          <a className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-blue-200">
+          <div className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-blue-200">
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
               Priority Proposals
             </h5>
@@ -555,110 +348,25 @@ export default function ControlPanel() {
                   }}
                   className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
                 >
-                  <a href="#">{proposal.companyName} - {proposal.availabilityStart}</a>
+                  <a href="#">
+                    {proposal.companyName} - {proposal.availabilityStart}
+                  </a>
                 </li>
               ))}
             </ul>
-          </a>
+          </div>
         </div>
 
-<div style={{
-  width: "30vw"
-}}>
-          <Accordion>
-      <Accordion.Panel>
-        <Accordion.Title><h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">Software Development</h5></Accordion.Title>
-        <Accordion.Content>
-        <ul className="w-98 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
-              {softDevProposals?.map((proposal) => (
-                <li
-                  key={proposal._id}
-                  onClick={(e) => {
-                    handleProposalClick(e, proposal);
-                  }}
-                  className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
-                >
-                  <a href="#">{proposal.companyName}</a>
-                </li>
-              ))}
-            </ul>
-        </Accordion.Content>
-      </Accordion.Panel>
-      <Accordion.Panel>
-        <Accordion.Title><h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">Digital Marketing</h5></Accordion.Title>
-        <Accordion.Content>
-        <ul className="w-98 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
-              {digMarkProposals?.map((proposal) => (
-                <li
-                  key={proposal._id}
-                  onClick={(e) => {
-                    handleProposalClick(e, proposal);
-                  }}
-                  className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
-                >
-                  <a href="#">{proposal.companyName}</a>
-                </li>
-              ))}
-            </ul>
-        </Accordion.Content>
-      </Accordion.Panel>
-      <Accordion.Panel>
-        <Accordion.Title><h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">Data Analytics</h5></Accordion.Title>
-        <Accordion.Content>
-        <ul className="w-98 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
-              {datAnProposals?.map((proposal) => (
-                <li
-                  key={proposal._id}
-                  onClick={(e) => {
-                    handleProposalClick(e, proposal);
-                  }}
-                  className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
-                >
-                  <a href="#">{proposal.companyName}</a>
-                </li>
-              ))}
-            </ul>
-        </Accordion.Content>
-      </Accordion.Panel>
-      <Accordion.Panel>
-        <Accordion.Title><h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">UX/UI</h5></Accordion.Title>
-        <Accordion.Content>
-        <ul className="w-98 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
-              {uxUiProposals?.map((proposal) => (
-                <li
-                  key={proposal._id}
-                  onClick={(e) => {
-                    handleProposalClick(e, proposal);
-                  }}
-                  className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
-                >
-                  <a href="#">{proposal.companyName}</a>
-                </li>
-              ))}
-            </ul>
-        </Accordion.Content>
-      </Accordion.Panel>
-      <Accordion.Panel>
-        <Accordion.Title><h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">No Category Assigned</h5></Accordion.Title>
-        <Accordion.Content>
-        <ul className="w-98 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
-              {noCategoryProposals?.map((proposal) => (
-                <li
-                  key={proposal._id}
-                  onClick={(e) => {
-                    handleProposalClick(e, proposal);
-                  }}
-                  className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
-                >
-                  <a href="#">{proposal.companyName}</a>
-                </li>
-              ))}
-            </ul>
-        </Accordion.Content>
-      </Accordion.Panel>
-    </Accordion>
-    </div>
-      </div> 
+        <div
+          style={{
+            width: "30vw",
+          }}
+        >
+          <PropByCatAccordion allProposals={allProposals} handleProposalClick={handleProposalClick}/>
+          
+        </div>
+      </div>
+    
 
       {currentProposal && (
         <div
@@ -668,9 +376,11 @@ export default function ControlPanel() {
             margin: "25px",
           }}
         >
-          <div
-            className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-blue-200"
-          >
+        <a href="#"><svg onClick={(e) => {handleProposalClose(e)}} className="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+</svg></a>
+
+          <div className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-blue-200">
             <div
               style={{
                 display: "flex",
@@ -692,9 +402,9 @@ export default function ControlPanel() {
                   {currentProposal.availabilityEnd}
                 </h5>
 
-                {readIcon}
+                <MarkAsReadButton currentProposal={currentProposal} getAllProposals={getAllProposals}/>
 
-                {deleteIcon}
+                <DeleteProposalModal userInfo={userInfo} currentProposal={currentProposal} deleteProposal={deleteProposal} setDeleteProposal={setDeleteProposal} getAllProposals={getAllProposals}/>
               </span>
             </div>
 
@@ -712,7 +422,7 @@ export default function ControlPanel() {
                   display: "flex",
                   flexDirection: "row",
                   columnGap: "10px",
-                  margin: "10px"
+                  margin: "10px",
                 }}
               >
                 <svg
@@ -792,6 +502,11 @@ export default function ControlPanel() {
                     />
                     <Label htmlFor="categoryUxUi">UX/UI</Label>
                   </div>
+                  <p>
+                    <h6 className="text-xs">
+                      <i>Current category is {currentCategory}</i>
+                    </h6>
+                  </p>
                 </fieldset>
 
                 <fieldset className="flex max-w-md flex-col gap-4">
@@ -851,6 +566,11 @@ export default function ControlPanel() {
                     />
                     <Label htmlFor="deniedStatus">Denied</Label>
                   </div>
+                  <p>
+                    <h6 className="text-xs">
+                      <i>Current status is {currentStatus}</i>
+                    </h6>
+                  </p>
                 </fieldset>
               </div>
             </div>
@@ -859,7 +579,7 @@ export default function ControlPanel() {
               style={{
                 height: "auto",
                 padding: "40px",
-                backgroundColor: "white"
+                backgroundColor: "white",
               }}
             >
               <p className="mb-3 text-xl text-gray-500 md:text-xl">
@@ -881,39 +601,39 @@ export default function ControlPanel() {
               <p className="mb-3 text-xl text-gray-500 md:text-xl">
                 Location: {currentProposalOwnerInfo.city},{" "}
                 {currentProposalOwnerInfo.state}
-              </p><br/>
+              </p>
+              <br />
               <p className="text-gray-500 md:text-xl">
                 {currentProposal.proposition}
-              </p><br/>
+              </p>
+              <br />
               <p className="text-gray-500 md:text-xl">
                 Tech: {currentProposal.techRequirements}
-              </p><br/>
-              <p className="text-gray-500 md:text-xl">
-                {projectInProgress}
-              </p><br/>
+              </p>
+              <br />
+              <p className="text-gray-500 md:text-xl">{projectInProgress}</p>
+              <br />
 
-            <div
-              style={{
-                justifyContent: "right",
-                margin: "20px"
-              }}
-            >
-              <Button
-                type="click"
-                onClick={(e) => {
-                  handleSaveAllProposalChanges(e);
+              <div
+                style={{
+                  justifyContent: "right",
+                  margin: "20px",
                 }}
-                theme={customTheme}
-                color="primary"
               >
-                Save All Changes
-              </Button>
-            </div>
-
+                <Button
+                className="bg-red-500"
+                  type="click"
+                  onClick={(e) => {
+                    handleSaveAllProposalChanges(e);
+                  }}
+                >
+                  Save All Changes
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      )}
-    </Flowbite>
-  );
+      )}    
+      </div>
+  )
 }
