@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import Nav from "../header/Nav";
 import NewProposalForm from "../../modals/NewProposalForm";
-import CTX from "../header/Context";
+import CTX from "../main/Context";
 import ProposalStatus from "../header/proposalStatus";
 
 export default function Proposal() {

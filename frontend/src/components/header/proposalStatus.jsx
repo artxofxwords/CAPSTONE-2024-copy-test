@@ -1,5 +1,6 @@
-import CTX from "../header/Context";
+import CTX from "../main/Context"
 import { useContext, useState, useEffect } from "react"
+
 
 
 
