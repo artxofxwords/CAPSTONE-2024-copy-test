@@ -13,8 +13,8 @@ router.delete("/:_id", authentication, userController.deleteUser);
 
 router.get("/getAll", userController.getAllUsers);
 
-router.get("/:_id", userController.getUserById);
-
 router.get("/check/:username", userController.getUserbyUsername);
+
+router.get("/:_id", userController.getUserById);
 
 module.exports = router;

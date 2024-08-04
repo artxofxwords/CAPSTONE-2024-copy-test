@@ -15,6 +15,8 @@ router.get("/displayProposal/:_id", proposalController.displayProposal);
 // Create proposal
 router.post("/createProposal", proposalController.createProposal);
 
+router.post("/send", proposalController.sendProposal);
+
 // Update proposal with id
 router.put("/updateProposal/:_id", authentication, proposalController.updateProposal);
 

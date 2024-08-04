@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate } from "react-router-dom";
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
+import { Button } from "flowbite-react";
 
 let registrationFailed;
-let usernameTaken;
 let passwordInputType;
 
 export default function NewUserForm() {
@@ -12,36 +13,44 @@ export default function NewUserForm() {
   const [usState, setUsState] = useState(); //for dropdown state selection
 
   const [username, setUsername] = useState(""); //for checking if username is taken
+  const [usernameTaken, setUsernameTaken] = useState(false); //for message below username input
   const [viewPassword, setViewPassword] = useState(false); //to view or hide password
 
   useEffect(() => {
-    if (username) {
     handleUsernameChange();
-    }
   }, [username]);
 
   async function handleAccountCreation(e) {
     e.preventDefault();
 
-    const body = {
-        username: e.target.username.value,
-        password: e.target.password.value,
-        firstName: e.target.firstName.value,
-        lastName: e.target.lastName.value,
-        email: e.target.email.value,
-        companyName: e.target.companyName.value,
-        company: trueCompany,
-        city: e.target.city.value,
-        state: usState
+    let companyNameHandle;
+
+    if (trueCompany) {
+      companyNameHandle = e.target.companyName.value;
+    } else {
+      companyNameHandle =
+        e.target.firstName.value + [" "] + e.target.lastName.value;
     }
 
+    const body = {
+      username: e.target.username.value,
+      password: e.target.password.value,
+      firstName: e.target.firstName.value,
+      lastName: e.target.lastName.value,
+      email: e.target.email.value,
+      companyName: companyNameHandle,
+      company: trueCompany,
+      city: e.target.city.value,
+      state: usState,
+    };
+
     const response = await fetch(`http://localhost:3000/users/register`, {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': "application/json",
-            Authorization: yourJwtToken
-        }
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: yourJwtToken,
+      },
     });
 
     const data = await response.json();
@@ -49,63 +58,67 @@ export default function NewUserForm() {
 
     //error handling
     if (response.status === 500) {
-      registrationFailed = <p className="text-red-600">Registration failed. Please try again.</p>
+      registrationFailed = (
+        <p className="text-red-600">Registration failed. Please try again.</p>
+      );
 
       e.target.reset();
-    } else (
-      navigate("/Login")
-    )
+    } else navigate("/Login");
+  }
 
-}
+  function handleCheck(e) {
+    e.preventDefault();
 
-function handleCheck (e) {
-  e.preventDefault();
+    setTrueCompany(!trueCompany);
+  }
 
-  setTrueCompany(!trueCompany);
-}
+  function handleState(e) {
+    e.preventDefault();
 
-function handleState (e) {
-  e.preventDefault();
+    setUsState(e.target.value);
+  }
 
-  setUsState(e.target.value);
-}
+  async function handleUsernameChange() {
+    console.log("username", username);
 
-async function handleUsernameChange () {
-  const response = await fetch (`http://localhost:3000/users/check/${username}`);
-  const data = await response.json();
-  console.log(data);
+    const response = await fetch(
+      `http://localhost:3000/users/check/${username}`
+    );
 
-    if (!data) {
-      usernameTaken = <p className="text-green-500">Username is available.</p>
-    }
+    const data = await response.json();
+    console.log(data);
 
     if (response.status === 200) {
-      usernameTaken = <p className="text-red-600">Sorry, this username is taken.</p>
+      setUsernameTaken(true);
     } else {
-      usernameTaken = <p className="text-green-500">Username is available.</p>
+      setUsernameTaken(false);
     }
-}
+  }
 
-if (viewPassword) {
-  passwordInputType = "text"
-} else {
-  passwordInputType = "password"
-}
-
+  if (viewPassword) {
+    passwordInputType = "text";
+  } else {
+    passwordInputType = "password";
+  }
 
   return (
-    <div style={{
-      display: "flex",
-      justifyContent: "center",
-      width: "98vw"
-    }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        width: "98vw",
+      }}
+    >
       <section className="bg-gray-50 dark:bg-gray-900">
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-teal md:text-2xl dark:text-white">
               Create an account with Upright Capstone to submit your proposal
             </h1>
-            <form className="space-y-4 md:space-y-6" onSubmit={handleAccountCreation}>
+            <form
+              className="space-y-4 md:space-y-6"
+              onSubmit={handleAccountCreation}
+            >
               <div>
                 <label
                   htmlFor="firstName"
@@ -162,7 +175,9 @@ if (viewPassword) {
                     aria-describedby="company"
                     type="checkbox"
                     className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                    onChange={(e) => {handleCheck(e)}}
+                    onChange={(e) => {
+                      handleCheck(e);
+                    }}
                   />
                 </div>
                 <div className="ml-3 text-sm">
@@ -208,71 +223,72 @@ if (viewPassword) {
                 />
               </div>
 
-              
-                <label
-                  htmlFor="countries"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  State
-                </label>
-                <select
-                  id="countries"
-                  value={usState}
-                  onChange={(e) => {handleState(e)}}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                >
-                  <option>AL</option>
-                  <option>AK</option>
-                  <option>AZ</option>
-                  <option>AR</option>
-                  <option>CA</option>
-                  <option>CO</option>
-                  <option>CT</option>
-                  <option>DC</option>
-                  <option>DE</option>
-                  <option>FL</option>
-                  <option>GA</option>
-                  <option>HI</option>
-                  <option>ID</option>
-                  <option>IL</option>
-                  <option>IN</option>
-                  <option>IO</option>
-                  <option>KS</option>
-                  <option>KY</option>
-                  <option>LA</option>
-                  <option>ME</option>
-                  <option>MD</option>
-                  <option>MA</option>
-                  <option>MI</option>
-                  <option>MN</option>
-                  <option>MS</option>
-                  <option>MO</option>
-                  <option>MT</option>
-                  <option>NE</option>
-                  <option>NV</option>
-                  <option>NH</option>
-                  <option>NJ</option>
-                  <option>NM</option>
-                  <option>NY</option>
-                  <option>NC</option>
-                  <option>ND</option>
-                  <option>OH</option>
-                  <option>OK</option>
-                  <option>OR</option>
-                  <option>PA</option>
-                  <option>RI</option>
-                  <option>SC</option>
-                  <option>SD</option>
-                  <option>TN</option>
-                  <option>TX</option>
-                  <option>UT</option>
-                  <option>VT</option>
-                  <option>VA</option>
-                  <option>WA</option>
-                  <option>WV</option>
-                  <option>WI</option>
-                  <option>WY</option>
-                </select>
+              <label
+                htmlFor="countries"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                State
+              </label>
+              <select
+                id="countries"
+                value={usState}
+                onChange={(e) => {
+                  handleState(e);
+                }}
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                <option>AL</option>
+                <option>AK</option>
+                <option>AZ</option>
+                <option>AR</option>
+                <option>CA</option>
+                <option>CO</option>
+                <option>CT</option>
+                <option>DC</option>
+                <option>DE</option>
+                <option>FL</option>
+                <option>GA</option>
+                <option>HI</option>
+                <option>ID</option>
+                <option>IL</option>
+                <option>IN</option>
+                <option>IO</option>
+                <option>KS</option>
+                <option>KY</option>
+                <option>LA</option>
+                <option>ME</option>
+                <option>MD</option>
+                <option>MA</option>
+                <option>MI</option>
+                <option>MN</option>
+                <option>MS</option>
+                <option>MO</option>
+                <option>MT</option>
+                <option>NE</option>
+                <option>NV</option>
+                <option>NH</option>
+                <option>NJ</option>
+                <option>NM</option>
+                <option>NY</option>
+                <option>NC</option>
+                <option>ND</option>
+                <option>OH</option>
+                <option>OK</option>
+                <option>OR</option>
+                <option>PA</option>
+                <option>RI</option>
+                <option>SC</option>
+                <option>SD</option>
+                <option>TN</option>
+                <option>TX</option>
+                <option>UT</option>
+                <option>VT</option>
+                <option>VA</option>
+                <option>WA</option>
+                <option>WV</option>
+                <option>WI</option>
+                <option>WY</option>
+              </select>
 
               <div>
                 <label
@@ -286,13 +302,19 @@ if (viewPassword) {
                   name="username"
                   id="username"
                   value={username}
-                  onChange={e => setUsername(e.target.value)}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="username"
                   required
                 />
               </div>
-              {usernameTaken}
+              {!usernameTaken && (
+                <p className="text-green-500">Username is available.</p>
+              )}
+
+              {usernameTaken && (
+                <p className="text-red-600">Sorry, this username is taken.</p>
+              )}
               <div>
                 <label
                   htmlFor="password"
@@ -300,32 +322,65 @@ if (viewPassword) {
                 >
                   Password
                 </label>
-                <div style={{
-                  display: "inline-flex",
-                  flexDirection: "row"
-                }}>
-                <input
-                  type={passwordInputType}
-                  name="password"
-                  id="password"
-                  placeholder="••••••••"
-                  className="inline bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required
-                />
-                <svg onClick={() => {setViewPassword(!viewPassword)}} className="inline w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-  <path stroke="currentColor" strokeWidth="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"/>
-  <path stroke="currentColor" strokeWidth="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-</svg>
-</div>
-
+                <div
+                  style={{
+                    display: "inline-flex",
+                    flexDirection: "row",
+                  }}
+                >
+                  <input
+                    type={passwordInputType}
+                    name="password"
+                    id="password"
+                    placeholder="••••••••"
+                    className="inline bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    required
+                  />
+                  <svg
+                    onClick={() => {
+                      setViewPassword(!viewPassword);
+                    }}
+                    className="inline w-6 h-6 text-gray-800 dark:text-white"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"
+                    />
+                    <path
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                    />
+                  </svg>
+                </div>
               </div>
-              
-              <button
-                type="submit"
-                className="w-full text-black bg-orange hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  flexDirection: "row",
+                }}
               >
-                Create account
-              </button>
+                <Button
+                  size="xs"
+                  type="submit"
+                  style={{
+                    display: "inline-flex",
+                    backgroundColor: "#ff532f",
+                    color: "black",
+                  }}
+                  className="focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100"
+                >
+                  Create account
+                </Button>
+              </div>
 
               {registrationFailed}
 

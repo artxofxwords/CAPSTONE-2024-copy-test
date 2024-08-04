@@ -31,10 +31,12 @@ export default function AssignAdminModal() {
     e.preventDefault();
 
     const thisUser = user;
+    console.log("this user", thisUser);
 
     if (thisUser.isAdmin) {
       const _id = thisUser._id;
       const body = { isAdmin: false };
+      console.log("token:", yourJwtToken);
 
       const response = await fetch(`http://localhost:3000/users/${_id}`, {
         method: "PUT",
@@ -52,6 +54,7 @@ export default function AssignAdminModal() {
     } else {
       const _id = thisUser._id;
       const body = { isAdmin: true };
+      console.log("token", yourJwtToken);
 
       const response = await fetch(`http://localhost:3000/users/${_id}`, {
         method: "PUT",
@@ -72,11 +75,20 @@ export default function AssignAdminModal() {
   return (
     <>
       <Button
-        className="bg-red-500"
+        size="xs"
+        style={{
+          display: "inline-flex",
+          backgroundColor: "#1b3b50",
+          color: "#ddd5d0",
+          borderRadius: "8px",
+          padding: "3px",
+          marginTop: "3px",
+        }}
         type="click"
         onClick={() => {
           setShowUserList(true);
         }}
+        className="focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100"
       >
         Assign Admin Status
       </Button>
@@ -96,7 +108,6 @@ export default function AssignAdminModal() {
                   key={user._id}
                   className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
                 >
-                  <span className="inline-flex w-3 h-3 me-3 bg-yellow-300 rounded-full"></span>
                   <a href="#">
                     {user.firstName} {user.lastName}{" "}
                     {user.isAdmin && (

@@ -1,70 +1,84 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 
 export default function proposalStatus() {
-const [state, setState] = useState(null);
+  const [state, setState] = useState(null);
 
-const owner = localStorage.getItem("userInfo");
-console.log("owner", owner);
+  const owner = localStorage.getItem("userInfo");
 
-useEffect(() => {
+  useEffect(() => {
     if (!state) {
-    getUserProposal();
+      getUserProposal();
     }
-}, []);
+  }, []);
 
-async function getUserProposal() {
-
+  async function getUserProposal() {
     const response = await fetch(
-    `http://localhost:3000/proposals/displayUserProposal/${owner}`
+      `http://localhost:3000/proposals/displayUserProposal/${owner}`
     );
 
     const data = await response.json();
     console.log("data", data);
     setState(data);
-}
+  }
 
-return (
+  return (
     <div>
-    <ul>
+      <ul>
         {state?.map((proposal) => {
-        return (
+          return (
             <li key={proposal._id}>
-            {proposal.submittedStatus ? (
+              {proposal.submittedStatus ? (
                 <p
-                style={{
+                  style={{
                     textAlign: "center",
-                    marginTop: "1%"
-                }}>Your proposal has been submitted</p>
-            ) : proposal.underReviewStatus ? (
+                    marginTop: "1%",
+                  }}
+                >
+                  Your proposal has been submitted
+                </p>
+              ) : proposal.underReviewStatus ? (
                 <p
-                style={{
+                  style={{
                     textAlign: "center",
-                    marginTop: "1%"
-                }}>Your proposal is under review</p>
-            ) : proposal.ongoingStatus ? (
+                    marginTop: "1%",
+                  }}
+                >
+                  Your proposal is under review
+                </p>
+              ) : proposal.ongoingStatus ? (
                 <p
-                style={{
+                  style={{
                     textAlign: "center",
-                    marginTop: "1%"
-                }}>Your proposal is ongoing</p>
-            ) : proposal.approvedStatus ? (
+                    marginTop: "1%",
+                  }}
+                >
+                  Your proposal is ongoing
+                </p>
+              ) : proposal.approvedStatus ? (
                 <p
-                style={{
+                  style={{
                     textAlign: "center",
-                    marginTop: "1%"
-                }}>Your proposal is APPROVED!</p>
-            ) : proposal.deniedStatus ? (
+                    marginTop: "1%",
+                  }}
+                >
+                  Your proposal is APPROVED!
+                </p>
+              ) : proposal.deniedStatus ? (
                 <p
-                style={{
+                  style={{
                     textAlign: "center",
-                    marginTop: "1%"
-                }}>Your proposal has been DENIED!</p>
-            ) : null}
+                    marginTop: "1%",
+                  }}
+                >
+                  Your proposal has been DENIED!
+                </p>
+              ) : null}
             </li>
-        );
+          );
         })}
-    </ul>
-    <div></div>
+      </ul>
+      <div></div>
     </div>
-);
+  );
 }

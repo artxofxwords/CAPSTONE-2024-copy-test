@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
 import { Drawer, Button, Modal } from "flowbite-react";
 import { useState, useEffect } from "react";
 
@@ -90,14 +92,27 @@ export default function AllUsersDrawer({ userInfo }) {
 
   return (
     <>
-      <Button className="bg-red-500" onClick={() => setIsOpen(true)}>
+      <Button
+      size="xs"
+      style={{
+        display: "inline-flex",
+        backgroundColor: "#1b3b50",
+        color: "#ddd5d0",
+        borderRadius: "8px",
+        padding: "3px",
+        marginTop: "3px"
+      }} onClick={() => setIsOpen(true)}
+      className="focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100">
         See All Registered Users
       </Button>
 
-      <Drawer open={isOpen} onClose={handleClose}>
-        <Drawer.Header title="Registered Users" />
+      <Drawer open={isOpen} onClose={handleClose} style={{
+        backgroundColor: "#25394f"
+      }}
+    >
+        <Drawer.Header title="" style={{color: "white"}}/>
         <Drawer.Items>
-          <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mb-6 text-sm text-white dark:text-gray-400">
             Current Registered Users
           </p>
           <ul className="w-98 text-med font-bold text-gray-900 bg-white border border-gray-200 rounded-lg">
@@ -106,7 +121,6 @@ export default function AllUsersDrawer({ userInfo }) {
                 key={user._id}
                 className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
               >
-                <span className="inline-flex w-3 h-3 me-3 bg-yellow-300 rounded-full"></span>
                 <a href="#">
                   {user.firstName} {user.lastName}
                 </a>
@@ -196,8 +210,8 @@ export default function AllUsersDrawer({ userInfo }) {
                         <Modal.Body>
                           <div className="space-y-6">
                             <p className="text-base leading-relaxed text-gray-500">
-                              Are you sure you want to delete {user.firstName}{" "}
-                              {user.lastName}?
+                              Are you sure you want to delete {thisUser.firstName}{" "}
+                              {thisUser.lastName}?
                             </p>
                             <p className="text-base leading-relaxed text-gray-500">
                               Action cannot be undone. This will delete the user
