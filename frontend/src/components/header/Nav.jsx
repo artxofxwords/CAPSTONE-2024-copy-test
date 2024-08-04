@@ -59,7 +59,7 @@ export default function Nav() {
           style={{
             display: "inline-flex",
             justifyContent: "right",
-            width: "9vw",
+            width: "9vw"
           }}
         >
           <img
@@ -135,7 +135,7 @@ export default function Nav() {
             }}
             className="focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100"
           >
-            Learn More About the Dev Team
+            More About the Dev Team
           </Button>
 
           {!isLoggedIn && (

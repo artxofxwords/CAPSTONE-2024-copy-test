@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 
-export default function ProposalStatus() {
+export default function proposalStatus() {
   const [state, setState] = useState(null);
 
   const owner = localStorage.getItem("userInfo");
