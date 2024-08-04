@@ -1,7 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
 
-export default function categories() {
+export default function Categories() {
     const navigateCat = useNavigate();
 
     return (
@@ -11,7 +11,7 @@ export default function categories() {
             style={{
                 display: "flex",
                 justifyContent: "center",
-                fontSize: "200%",
+                fontSize: "2em",
                 marginTop: "2%",
                 marginBottom: "2%"
             }}>

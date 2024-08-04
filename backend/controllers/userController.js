@@ -19,7 +19,7 @@ exports.loginUser = async (req, res) => {
         isAdmin: userFound.isAdmin,
       };
       const signedJWT = jwt.sign(payload, process.env.SECRET_KEY, {
-        expiresIn: 43200,
+        expiresIn: 43200
       });
 
       res
@@ -82,6 +82,7 @@ exports.registerUser = async (req, res) => {
 
 // delete user controller
 exports.deleteUser = async (req, res) => {
+  if (req.user.isAdmin || req.user._id === req.params._id) {
   try {
     await User.findByIdAndDelete(req.params._id);
 
@@ -89,10 +90,14 @@ exports.deleteUser = async (req, res) => {
   } catch (err) {
     res.status(500).json("Could not delete user!");
   }
+} else {
+  res.status(400).json("You do not have authorization to delete this user.");
+}
 };
 
 // update user controller
 exports.updateUser = async (req, res) => {
+  if (req.user.isAdmin || req.user._id === req.params._id) {
   try {
     const changeUser = new User({
       _id: req.params._id,
@@ -114,6 +119,9 @@ exports.updateUser = async (req, res) => {
   } catch (err) {
     res.status(500).json("User could not be updated!");
   }
+} else {
+  res.status(400).json("You do not have authorization to delete this user.");
+}
 };
 
 // get all users
@@ -142,6 +150,10 @@ exports.getUserById = async (req, res) => {
 exports.getUserbyUsername = async (req, res) => {
   try {
     const userFound = await User.findOne({username: req.params.username});
+
+    if (userFound === null) {
+      return res.status(500).json("Username is available");
+    }
 
     res.status(200).json(userFound);
   } catch (err) {

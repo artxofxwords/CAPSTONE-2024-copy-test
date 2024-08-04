@@ -1,72 +1,84 @@
-import CTX from "../header/Context";
-import { useContext, useState, useEffect } from "react"
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from "react";
 
+export default function ProposalStatus() {
+  const [state, setState] = useState(null);
 
+  const owner = localStorage.getItem("userInfo");
 
-
-export default function proposalStatus () {
-    const [state, setState] = useState(null);
-    const CONTEXT = useContext(CTX);
-    const userInfo = localStorage.getItem("userInfo")
-    const owner = userInfo
-    console.log("userInfo", userInfo)
-    
-    useEffect(() => {
-        if (!state){
-            getUserProposal()
-        }
-    }, [])
-
-    async function getUserProposal() {
-        console.log("test")
-
-
-    
-        const response = await fetch(
-            `http://localhost:3000/proposals/displayUserProposal/${owner}`);
-
-            
-            const data = await response.json();
-            console.log("data", data);
-            setState(data)
+  useEffect(() => {
+    if (!state) {
+      getUserProposal();
     }
+  }, []);
 
+  async function getUserProposal() {
+    const response = await fetch(
+      `http://localhost:3000/proposals/displayUserProposal/${owner}`
+    );
 
+    const data = await response.json();
+    console.log("data", data);
+    setState(data);
+  }
 
-    return (
-        <div>
-            {state ?
-            <p>
-                {state[0].companyName}
-            </p> : null}
-        <ul>
-            
-
+  return (
+    <div>
+      <ul>
         {state?.map((proposal) => {
-            <li
-            key={proposal._id}
-            >{proposal.companyName}
-                {proposal.submittedStatus ?
-                    <p>Your proposal has been submitted</p>
-                    : proposal.underReviewStatus ?
-                    <p>Your proposal is under review</p>
-                    : proposal.ongoingStatus ?
-                    <p>Your proposal is ongoing</p>
-                    : proposal.approvedStatus ?
-                    <p>Your proposal is APPROVED!</p>
-                    :proposal.deniedStatus ?
-                    <p>Your proposal has been DENIED!</p>
-                    : null
-                }
-                </li>
-    })}
-
-            </ul>
-            <div>
-                hello
-            </div>
-        </div>
-    )
-    }
-
-
+          return (
+            <li key={proposal._id}>
+              {proposal.submittedStatus ? (
+                <p
+                  style={{
+                    textAlign: "center",
+                    marginTop: "1%",
+                  }}
+                >
+                  Your proposal has been submitted
+                </p>
+              ) : proposal.underReviewStatus ? (
+                <p
+                  style={{
+                    textAlign: "center",
+                    marginTop: "1%",
+                  }}
+                >
+                  Your proposal is under review
+                </p>
+              ) : proposal.ongoingStatus ? (
+                <p
+                  style={{
+                    textAlign: "center",
+                    marginTop: "1%",
+                  }}
+                >
+                  Your proposal is ongoing
+                </p>
+              ) : proposal.approvedStatus ? (
+                <p
+                  style={{
+                    textAlign: "center",
+                    marginTop: "1%",
+                  }}
+                >
+                  Your proposal is APPROVED!
+                </p>
+              ) : proposal.deniedStatus ? (
+                <p
+                  style={{
+                    textAlign: "center",
+                    marginTop: "1%",
+                  }}
+                >
+                  Your proposal has been DENIED!
+                </p>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+      <div></div>
+    </div>
+  );
+}
