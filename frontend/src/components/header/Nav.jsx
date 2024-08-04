@@ -54,7 +54,7 @@ export default function Nav() {
             padding: "5px",
           }}
         >
-          Learn More About the Dev Team
+          More About the Dev Team
         </button>
         <button
           type="click"

@@ -1,12 +1,10 @@
-import CTX from "../main/Context.jsx";
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function proposalStatus() {
 const [state, setState] = useState(null);
-const CONTEXT = useContext(CTX);
-const userInfo = localStorage.getItem("userInfo");
-const owner = userInfo;
-console.log("userInfo", userInfo);
+
+const owner = localStorage.getItem("userInfo");
+console.log("owner", owner);
 
 useEffect(() => {
     if (!state) {
