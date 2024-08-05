@@ -59,31 +59,35 @@ const proposalSchema = new mongoose.Schema({
         default: false
     }, 
     // Project Status
-    approvedStatus: {
-        type: Boolean,
-        required: true,
-        default: false
+    status: {
+        type: String,
+        required: true
     },
-    underReviewStatus: {
-        type: Boolean,
-        required: true,
-        default: false
-    }, 
-    submittedStatus: {
-        type: Boolean,
-        required: true,
-        default: true
-    },
-    deniedStatus: {
-        type: Boolean,
-        required: true,
-        default: false
-    },
-    ongoingStatus: {
-        type: Boolean,
-        required: true,
-        default: false
-    },
+    // approvedStatus: {
+    //     type: Boolean,
+    //     required: true,
+    //     default: false
+    // },
+    // underReviewStatus: {
+    //     type: Boolean,
+    //     required: true,
+    //     default: false
+    // }, 
+    // submittedStatus: {
+    //     type: Boolean,
+    //     required: true,
+    //     default: true
+    // },
+    // deniedStatus: {
+    //     type: Boolean,
+    //     required: true,
+    //     default: false
+    // },
+    // ongoingStatus: {
+    //     type: Boolean,
+    //     required: true,
+    //     default: false
+    // },
     owner: {
         type: String,
         requried: true

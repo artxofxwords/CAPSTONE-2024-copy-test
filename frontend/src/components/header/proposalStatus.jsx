@@ -23,57 +23,12 @@ export default function proposalStatus() {
   }
 
   return (
-    <div>
+    <div style={{textAlign: "left", marginTop: "4vh"}}>
       <ul>
         {state?.map((proposal) => {
           return (
-            <li key={proposal._id}>
-              {proposal.submittedStatus ? (
-                <p
-                  style={{
-                    textAlign: "center",
-                    marginTop: "1%",
-                  }}
-                >
-                  Your proposal has been submitted
-                </p>
-              ) : proposal.underReviewStatus ? (
-                <p
-                  style={{
-                    textAlign: "center",
-                    marginTop: "1%",
-                  }}
-                >
-                  Your proposal is under review
-                </p>
-              ) : proposal.ongoingStatus ? (
-                <p
-                  style={{
-                    textAlign: "center",
-                    marginTop: "1%",
-                  }}
-                >
-                  Your proposal is ongoing
-                </p>
-              ) : proposal.approvedStatus ? (
-                <p
-                  style={{
-                    textAlign: "center",
-                    marginTop: "1%",
-                  }}
-                >
-                  Your proposal is APPROVED!
-                </p>
-              ) : proposal.deniedStatus ? (
-                <p
-                  style={{
-                    textAlign: "center",
-                    marginTop: "1%",
-                  }}
-                >
-                  Your proposal has been DENIED!
-                </p>
-              ) : null}
+            <li key={proposal._id} style={{marginBottom: "8px"}}>
+              <b>{proposal.companyName}</b> : Proposal marked as <u>&quot;{proposal.status}&quot;</u> 
             </li>
           );
         })}

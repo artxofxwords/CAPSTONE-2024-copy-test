@@ -6,7 +6,7 @@ var nodemailer = require("nodemailer");
 exports.displayAllProposal = async (req, res) => {
   try {
     const allProposals = await Proposal.find();
-    console.log("AllProposals", allProposals);
+
     res.status(200).json(allProposals);
   } catch (err) {
     res.status(500).json("Error: Could not get proposal");
@@ -16,10 +16,9 @@ exports.displayAllProposal = async (req, res) => {
 exports.displayProposal = async (req, res) => {
   try {
     console.log(req.params);
-    const allProposals = await Proposal.findOne({ _id: req.params._id });
+    const foundProposal = await Proposal.findOne({ _id: req.params._id });
 
-    console.log(`${allProposals}`);
-    res.status(200).json(allProposals);
+    res.status(200).json(foundProposal);
   } catch (err) {
     console.log(err);
     res.status(500).json("Error: Could not get proposal");
@@ -27,20 +26,24 @@ exports.displayProposal = async (req, res) => {
 };
 
 exports.createProposal = async (req, res) => {
-  const companyName = req.body.companyName;
-  const website = req.body.website;
-  const projectStarted = req.body.projectStarted;
-  const proposition = req.body.proposition;
-  const techRequirements = req.body.techRequirements;
-  const availabilityStart = req.body.availabilityStart;
-  const availabilityEnd = req.body.availabilityEnd;
-  const contact = req.body.contact;
-  const owner = req.body.owner;
-  const category = req.body.category;
-  const categorySoftwareDevelopment = req.body.categorySoftwareDevelopment;
-  const categoryDataAnalytics = req.body.categoryDataAnalytics;
-  const categoryDigitalMarketing = req.body.categoryDigitalMarketing;
-  const categoryUxUi = req.body.categoryUxUi;
+  const {
+    companyName,
+    website,
+    projectStarted,
+    proposition,
+    techRequirements,
+    availabilityStart,
+    availabilityEnd,
+    contact,
+    owner,
+    category,
+    categorySoftwareDevelopment,
+    categoryDataAnalytics,
+    categoryDigitalMarketing,
+    categoryUxUi,
+    status,
+    read
+  } = req.body;
 
   try {
     const newProposal = new Proposal({
@@ -58,6 +61,8 @@ exports.createProposal = async (req, res) => {
       categoryDataAnalytics: categoryDataAnalytics,
       categoryDigitalMarketing: categoryDigitalMarketing,
       categoryUxUi: categoryUxUi,
+      status: status,
+      read: read
     });
 
     const data = await newProposal.save();
@@ -90,7 +95,7 @@ exports.sendProposal = (req, res) => {
   `;
 
   const plaintextoutput = `
-  You have a new proposal submitted.
+  A new proposal has been submitted.
     Proposal Info:
     
     Company: ${req.body.companyName}
@@ -102,32 +107,32 @@ exports.sendProposal = (req, res) => {
     
     Proposal:
     ${req.body.proposition}
-  `
+  `;
 
   var transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
-      user: 'uprightcapstone@gmail.com',
-      pass: 'nfdthiwrutgrubze'
-    }
+      user: "uprightcapstone@gmail.com",
+      pass: "nfdthiwrutgrubze",
+    },
   });
-  
+
   var mailOptions = {
     from: '"Upright Capstone" <uprightcapstone@gmail.com>',
-    to: 'brennan.amanda.j@gmail.com',
-    subject: 'New Proposal Submitted',
+    to: "brennan.amanda.j@gmail.com",
+    subject: "New Proposal Submitted",
     text: plaintextoutput,
-    html: output
+    html: output,
   };
-  
-  transporter.sendMail(mailOptions, function(error, info){
+
+  transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
     } else {
-      console.log('Email sent: ' + info.response);
+      console.log("Email sent: " + info.response);
     }
   });
-}
+};
 
 exports.updateProposal = async (req, res) => {
   if (req.user.isAdmin || req.user._id === req.params._id) {
@@ -148,11 +153,7 @@ exports.updateProposal = async (req, res) => {
         categoryDigitalMarketing: req.body.categoryDigitalMarketing,
         categoryUxUi: req.body.categoryUxUi,
         read: req.body.read,
-        approvedStatus: req.body.approvedStatus,
-        underReviewStatus: req.body.underReviewStatus,
-        submittedStatus: req.body.submittedStatus,
-        deniedStatus: req.body.deniedStatus,
-        ongoingStatus: req.body.ongoingStatus,
+        status: req.body.status,
       };
 
       const data = await Proposal.findOneAndUpdate(
@@ -196,12 +197,12 @@ exports.deleteProposal = async (req, res) => {
 };
 
 exports.displayUserProposal = async (req, res) => {
-    try {
-      const test = await Proposal.find({ owner: req.params.owner });
+  try {
+    const test = await Proposal.find({ owner: req.params.owner });
 
-      res.status(200).json(test);
-    } catch (err) {
-      console.log(req.params.owner);
-      res.status(500).json("Proposal Not Found");
-    }
+    res.status(200).json(test);
+  } catch (err) {
+    console.log(req.params.owner);
+    res.status(500).json("Proposal Not Found");
+  }
 };

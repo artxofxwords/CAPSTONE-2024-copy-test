@@ -119,6 +119,8 @@ export default function NewProposalForm() {
       categoryDigitalMarketing: categoryDigitalMarketing,
       categoryUxUi: categoryUxUi,
       owner: decoded._id,
+      status: "submitted",
+      read: false
     };
 
     const response = await fetch(
@@ -172,6 +174,8 @@ export default function NewProposalForm() {
       categoryDigitalMarketing: categoryDigitalMarketing,
       categoryUxUi: categoryUxUi,
       owner: decoded._id,
+      status: "submitted",
+      read: false
     };
 
     const response = await fetch(`http://localhost:3000/proposals/send`, {

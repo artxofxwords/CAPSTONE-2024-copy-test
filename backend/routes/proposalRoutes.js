@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const authentication = require("../middleware/authentication");
+const authentication = require("../middleware/authentication"); //check for user token
 
 
-//import proposal controller
+// import proposal controller
 const proposalController = require("../controllers/proposalController");
 
-//GET ALL proposals
+// GET ALL proposals
 router.get("/displayAllProposal", proposalController.displayAllProposal);
 
 // GET proposal by id
@@ -23,6 +23,7 @@ router.put("/updateProposal/:_id", authentication, proposalController.updateProp
 // Delete proposal with id
 router.delete("/deleteProposal/:_id", authentication, proposalController.deleteProposal); 
 
+// GET proposals for specified owner (user _id)
 router.get("/displayUserProposal/:owner", proposalController.displayUserProposal);
 
 

@@ -36,10 +36,10 @@ export default function ControlPanel() {
 
   const [deleteProposal, setDeleteProposal] = useState(false); //shows delete proposal popup to confirm delete
 
-  const [statusUnderReview, setStatusUnderReview] = useState(false); //mark under review once proposal is opened
-  const [statusOngoing, setStatusOngoing] = useState(false); //mark ongoing once contact made
-  const [statusApproved, setStatusApproved] = useState(false); //mark approved once ready to assign to cohort
-  const [statusDenied, setStatusDenied] = useState(false); //mark denied to remove from view
+  const [status, setStatus] = useState(); //proposa status submitted/ approved/ denied
+  // const [statusOngoing, setStatusOngoing] = useState(false); //mark ongoing once contact made
+  // const [statusApproved, setStatusApproved] = useState(false); //mark approved once ready to assign to cohort
+  // const [statusDenied, setStatusDenied] = useState(false); //mark denied to remove from view
 
   //useEffect functions
   useEffect(() => {
@@ -133,42 +133,20 @@ export default function ControlPanel() {
       projectInProgress = <span>Project is not started.</span>;
     }
 
-    // currentProposalStatusCategory();
+    currentProposalStatus();
   }
 
-  // function currentProposalStatusCategory() {
-  //   if (currentProposal.category === false) {
-  //     setCurrentCategory("No Category");
-  //   }
-  //   if (currentProposal.categorySoftwareDevelopment) {
-  //     setCurrentCategory("Software Development");
-  //   }
-  //   if (currentProposal.categoryDataAnalytics) {
-  //     setCurrentCategory("Data Analytics");
-  //   }
-  //   if (currentProposal.categoryDigitalMarketing) {
-  //     setCurrentCategory("Digital Marketing");
-  //   }
-  //   if (currentProposal.categoryUxUi) {
-  //     setCurrentCategory("UX/UI");
-  //   }
-
-  //   if (currentProposal.submittedStatus) {
-  //     setCurrentStatus("Submitted");
-  //   }
-  //   if (currentProposal.underReviewStatus) {
-  //     setCurrentStatus("Under Review");
-  //   }
-  //   if (currentProposal.ongoingStatus) {
-  //     setCurrentStatus("Ongoing");
-  //   }
-  //   if (currentProposal.approvedStatus) {
-  //     setCurrentStatus("Approved");
-  //   }
-  //   if (currentProposal.deniedStatus) {
-  //     setCurrentStatus("Denied");
-  //   }
-  // }
+  function currentProposalStatus() {
+    if (currentProposal.status === "submitted") {
+      setStatus("Submitted");
+    }
+    if (currentProposal.status === "approved") {
+      setStatus("Approved");
+    }
+    if (currentProposal.status === "denied") {
+      setStatus("Denied");
+    }
+  }
 
   //pulls info of sponser who submitted proposal through owner id
   async function getOwnerInfo() {
@@ -209,32 +187,19 @@ export default function ControlPanel() {
   }
 
   //functions for state variables to hold admin selections until "save changes" is clicked for put request
-  function handleStatusUnderReview(e) {
-    e.preventDefault();
-    setStatusUnderReview(!statusUnderReview);
-  }
-
-  function handleStatusOngoing(e) {
-    e.preventDefault();
-    setStatusOngoing(!statusOngoing);
-  }
-
   function handleStatusApproved(e) {
     e.preventDefault();
-    setStatusApproved(!statusApproved);
+    setStatus("approved");
   }
 
   function handleStatusDenied(e) {
     e.preventDefault();
-    setStatusDenied(!statusDenied);
+    setStatus("denied");
   }
 
   //handles admin saving all state variables to database
   async function handleSaveAllProposalChanges(e) {
     e.preventDefault();
-
-    // const thisProposal = currentProposal;
-    // console.log("this proposal", thisProposal);
 
     const body = {
       _id: userInfo._id,
@@ -244,10 +209,7 @@ export default function ControlPanel() {
       categoryDigitalMarketing: categoryDigMark,
       categoryDataAnalytics: categoryDatAn,
       categoryUxUi: categoryUxUi,
-      approvedStatus: statusApproved,
-      underReviewStatus: statusUnderReview,
-      deniedStatus: statusDenied,
-      ongoingStatus: statusOngoing,
+      status: status,
     };
 
     const response = await fetch(
@@ -266,7 +228,7 @@ export default function ControlPanel() {
     console.log("Proposal has been updated:", data);
 
     getAllProposals();
-    // currentProposalStatusCategory();
+    currentProposalStatus();
   }
 
   return (
@@ -289,7 +251,7 @@ export default function ControlPanel() {
               }}
             >
               <span style={{ color: "#ff532f" }}>Upright Capstone</span> | Admin
-              Dashboard
+              Control Panel
             </h1>
           </div>
         )}
@@ -592,30 +554,7 @@ export default function ControlPanel() {
                       />
                       <Label htmlFor="submitted">Submitted</Label>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Radio
-                        id="underReviewStatus"
-                        name="status"
-                        value="underReviewStatus"
-                        onChange={(e) => {
-                          handleStatusUnderReview(e);
-                        }}
-                      />
-                      <Label htmlFor="underReviewStatus">Under Review</Label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Radio
-                        id="ongoingStatus"
-                        name="status"
-                        value="ongoingStatus"
-                        onChange={(e) => {
-                          handleStatusOngoing(e);
-                        }}
-                      />
-                      <Label htmlFor="ongoingStatus">
-                        Ongoing - contact made
-                      </Label>
-                    </div>
+
                     <div className="flex items-center gap-2">
                       <Radio
                         id="approvedStatus"
@@ -638,11 +577,11 @@ export default function ControlPanel() {
                       />
                       <Label htmlFor="deniedStatus">Denied</Label>
                     </div>
-                    {/* <p>
+                    <p>
                       <h6 className="text-xs">
-                        <i>Current status is {currentStatus}</i>
+                        <i>Current status is {status}</i>
                       </h6>
-                    </p> */}
+                    </p>
                   </fieldset>
                 </div>
               </div>

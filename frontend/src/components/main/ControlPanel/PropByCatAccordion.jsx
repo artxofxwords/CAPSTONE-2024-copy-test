@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
 import {useState, useEffect} from 'react';
 import { Accordion } from 'flowbite-react';
 
@@ -65,7 +67,7 @@ useEffect(() => {
                       }}
                       className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
                     >
-                      <a href="#">{proposal.companyName}</a>
+                      <a href="#">{proposal.companyName}</a>   <span><i>{proposal.status}</i></span>
                     </li>
                   ))}
                 </ul>
@@ -87,7 +89,7 @@ useEffect(() => {
                       }}
                       className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
                     >
-                      <a href="#">{proposal.companyName}</a>
+                      <a href="#">{proposal.companyName}</a>   <span><i>{proposal.status}</i></span>
                     </li>
                   ))}
                 </ul>
@@ -109,7 +111,7 @@ useEffect(() => {
                       }}
                       className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
                     >
-                      <a href="#">{proposal.companyName}</a>
+                      <a href="#">{proposal.companyName}</a>   <span><i>{proposal.status}</i></span>
                     </li>
                   ))}
                 </ul>
@@ -131,7 +133,7 @@ useEffect(() => {
                       }}
                       className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
                     >
-                      <a href="#">{proposal.companyName}</a>
+                      <a href="#">{proposal.companyName}</a>   <span><i>{proposal.status}</i></span>
                     </li>
                   ))}
                 </ul>
@@ -153,7 +155,7 @@ useEffect(() => {
                       }}
                       className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
                     >
-                      <a href="#">{proposal.companyName}</a>
+                      <a href="#">{proposal.companyName}</a>   <span><i>{proposal.status}</i></span>
                     </li>
                   ))}
                 </ul>

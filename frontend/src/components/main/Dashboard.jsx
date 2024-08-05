@@ -1,4 +1,4 @@
-import LoginHeader from "../header/LoginHeader.jsx";
+import LoginHeader from "../header/loginHeader.jsx";
 import Categories from "./Categories.jsx";
 // import Proposal from "./Proposal.jsx";
 
