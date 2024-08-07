@@ -10,8 +10,15 @@ exports.loginUser = async (req, res) => {
 
   const userFound = await User.findOne({ username: username });
 
-  const hashedPasswordFromUser = userFound.password;
+  if (!userFound) {
+    res.status(301).json("User not created")
+    console.log("User not created")
+    return;
+  }
 
+  const hashedPasswordFromUser = userFound.password;
+  
+  
   bcrypt.compare(password, hashedPasswordFromUser, (err, result) => {
     if (result) {
       const payload = {
