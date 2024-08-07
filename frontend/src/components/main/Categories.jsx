@@ -1,4 +1,4 @@
-
+import "../../CSS/Categories.css"
 import { useNavigate } from "react-router-dom";
 
 export default function Categories() {
@@ -39,27 +39,65 @@ export default function Categories() {
                         textAlign: "center",
                         border: "1px solid #ddd"
                     }}>
-                        <img src="https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                        <img 
+                        className="softwareEngineeringPhoto"
+                        src="https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                        
                         style={{
                             height: "20vh",
                             width: "15vw",
-                            margin: "auto"
+                            margin: "auto",
+                            position: "relative"
                         }}/>
-                        <button
+                        <div className="SFTWREPts"
                         style={{
-                            display: "inline-block",
-                            marginTop: "-5%"
-                        }}
-                        type="click"
-                        onClick={() => navigateCat('/softwareEngineering')}>
-                            Software Engineering</button>
-                        
+                            position: "absolute",
+                            bottom: "53vh",
+                            left: "15vw",
+                            color: "white"
+                        }}>
+                        • Javascript Foundations
+                        </div>
+                        <div className="SFTWREPts"
+                        style={{
+                            position: "absolute",
+                            color: "white",
+                            bottom: "50vh",
+                            left: "15vw"
+                        }}>
+                        • React Front-End Development
+                        </div>
+                        <div className="SFTWREPts"
+                        style={{
+                            position: "absolute",
+                            color: "white",
+                            bottom: "47vh",
+                            left: "15vw"
+                        }}>
+                        • MongoDB Back-End Development
+                        </div>
+                        <div className="SFTWREPts"
+                        style={{
+                            position: "absolute",
+                            color: "white",
+                            bottom: "44vh",
+                            left: "15vw"
+                        }}>
+                        • Full-Stack Software Development
+                        </div>
+                        <div className="SFTWREENGR" 
+                        style={{
+
+                        }}>
+                            Software Engineering
+                        </div>
                     </div>
                     <div
                     style={{
                         color: "black",
                         textAlign: "center",
-                        border: "1px solid #ddd"
+                        border: "1px solid #ddd",
+                        position: "relative"
                     }}>
                         <img src="https://images.pexels.com/photos/6476808/pexels-photo-6476808.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
                         style={{
@@ -67,6 +105,45 @@ export default function Categories() {
                             width: "15vw",
                             margin: "auto"
                         }}/>
+                        <div className="SFTWREPts"
+                        style={{
+                            position: "absolute",
+                            bottom: "5vh",
+                            left: "5vw",
+                            color: "black"
+                        }}>
+                        • Social Media Management
+
+                        </div>
+                        <div className="SFTWREPts"
+                        style={{
+                            position: "absolute",
+                            color: "black",
+                            bottom: "7vh",
+                            left: "5vw"
+                        }}>
+                        • Content and Email Marketing
+
+                        </div>
+                        <div className="SFTWREPts"
+                        style={{
+                            position: "absolute",
+                            color: "black",
+                            bottom: "9vh",
+                            left: "5vw"
+                        }}>
+                        • Search Engine Marketing
+
+                        </div>
+                        <div className="SFTWREPts"
+                        style={{
+                            position: "absolute",
+                            color: "black",
+                            bottom: "11vh",
+                            left: "5vw"
+                        }}>
+                        • Marketing Automation
+                        </div>
                         <button
                         type="click"
                         onClick={() => navigateCat('/digitalMarketing')}>
