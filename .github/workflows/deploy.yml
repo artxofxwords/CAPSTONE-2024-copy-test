@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
         with: 
-          working-directory: /Capstone2024/frontend/
+          working-directory: /CAPSTONE2024/frontend/
           persist-credentials: false
 
       - name: Build project
