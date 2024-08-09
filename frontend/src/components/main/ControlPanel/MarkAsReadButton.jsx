@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { Button } from "flowbite-react";
@@ -42,6 +43,7 @@ export default function MarkAsReadButton({ currentProposal, getAllProposals }) {
         _id: userInfo._id,
         isAdmin: userInfo.isAdmin,
         read: true,
+        updated: false //assumes that if admin is marking prop as read, the update has been seen, so removes from updated list
       };
     }
 

@@ -1,16 +1,9 @@
 import { useNavigate } from "react-router-dom";
 
-//https://medium.com/@manishmanice2003/using-environment-variables-in-your-front-end-react-app-bd418b3258a8
-// const SERVER = import.meta.env.VITE_server;
-
-// import { useContext } from "react";
-// import CTX from "../main/Context"; //holds user info for site
-
 let loginFailed; //for error code if login fails
 
 export default function Login() {
   const navigate = useNavigate(); //to direct user based on credentials (admin or sponsor)
-  // const CONTEXT = useContext(CTX);
 
   async function handleAccountLogin(e) {
     e.preventDefault();

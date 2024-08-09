@@ -128,7 +128,6 @@ exports.updateUser = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
   try {
     const data = await User.find({});
-    console.log("User:", data);
 
     res.status(200).json(data);
   } catch (err) {

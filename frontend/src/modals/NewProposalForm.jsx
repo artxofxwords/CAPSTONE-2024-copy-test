@@ -11,13 +11,13 @@ export default function NewProposalForm() {
 
   const [userInfo, setUserInfo] = useState([]); //userInfo that persists
 
-  const [category, setCategory] = useState(false);
-  const [categorySoftwareDevelopment, setCategorySoftwareDevelopment] =
-    useState(false);
-  const [categoryDataAnalysis, setCategoryDataAnalysis] = useState(false);
-  const [categoryUxUi, setCategoryUxUi] = useState(false);
-  const [categoryDigitalMarketing, setCategoryDigitalMarketing] =
-    useState(false);
+  const [category, setCategory] = useState("noCategory");
+  // const [categorySoftwareDevelopment, setCategorySoftwareDevelopment] =
+  //   useState(false);
+  // const [categoryDataAnalysis, setCategoryDataAnalysis] = useState(false);
+  // const [categoryUxUi, setCategoryUxUi] = useState(false);
+  // const [categoryDigitalMarketing, setCategoryDigitalMarketing] =
+  //   useState(false);
 
   const [dateStart, setDateStart] = useState();
   const [dateEnd, setDateEnd] = useState();
@@ -41,32 +41,32 @@ export default function NewProposalForm() {
   function handleCategory(e) {
     e.preventDefault();
 
-    setCategory(!category);
+    setCategory(e.target.value);
   }
 
-  function handleSoftDev(e) {
-    e.preventDefault();
+  // function handleSoftDev(e) {
+  //   e.preventDefault();
 
-    setCategorySoftwareDevelopment(!categorySoftwareDevelopment);
-  }
+  //   setCategorySoftwareDevelopment(!categorySoftwareDevelopment);
+  // }
 
-  function handleDatAn(e) {
-    e.preventDefault();
+  // function handleDatAn(e) {
+  //   e.preventDefault();
 
-    setCategoryDataAnalysis(!categoryDataAnalysis);
-  }
+  //   setCategoryDataAnalysis(!categoryDataAnalysis);
+  // }
 
-  function handleUxUi(e) {
-    e.preventDefault();
+  // function handleUxUi(e) {
+  //   e.preventDefault();
 
-    setCategoryUxUi(!categoryUxUi);
-  }
+  //   setCategoryUxUi(!categoryUxUi);
+  // }
 
-  function handleDigMark(e) {
-    e.preventDefault();
+  // function handleDigMark(e) {
+  //   e.preventDefault();
 
-    setCategoryDigitalMarketing(!categoryDigitalMarketing);
-  }
+  //   setCategoryDigitalMarketing(!categoryDigitalMarketing);
+  // }
 
   function handleCheck(e) {
     e.preventDefault();
@@ -114,13 +114,10 @@ export default function NewProposalForm() {
       availabilityEnd: dateEnd,
       contact: e.target.contact.value,
       category: category,
-      categorySoftwareDevelopment: categorySoftwareDevelopment,
-      categoryDataAnalysis: categoryDataAnalysis,
-      categoryDigitalMarketing: categoryDigitalMarketing,
-      categoryUxUi: categoryUxUi,
       owner: decoded._id,
       status: "submitted",
-      read: false
+      read: false,
+      updated: false
     };
 
     const response = await fetch(
@@ -169,13 +166,10 @@ export default function NewProposalForm() {
       availabilityEnd: dateEnd,
       contact: e.target.contact.value,
       category: category,
-      categorySoftwareDevelopment: categorySoftwareDevelopment,
-      categoryDataAnalysis: categoryDataAnalysis,
-      categoryDigitalMarketing: categoryDigitalMarketing,
-      categoryUxUi: categoryUxUi,
       owner: decoded._id,
       status: "submitted",
-      read: false
+      read: false,
+      updated: false
     };
 
     const response = await fetch(`http://localhost:3000/proposals/send`, {
@@ -252,6 +246,7 @@ export default function NewProposalForm() {
                   <fieldset>
                     <legend>
                       <p
+                      className="mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         style={{
                           display: "inline-flex",
                           marginBottom: "8px",
@@ -263,18 +258,18 @@ export default function NewProposalForm() {
 
                     <div className="flex items-center mb-4">
                       <input
-                        id="unassigned"
+                        id="noCategory"
                         type="radio"
                         name="category"
-                        value="unassigned"
+                        value="noCategory"
                         className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
                         onChange={(e) => {
                           handleCategory(e);
                         }}
                       />
                       <label
-                        htmlFor="unassigned"
-                        className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                        htmlFor="noCategory"
+                        className="block ms-2 text-sm font-light text-gray-900 dark:text-gray-300"
                       >
                         I&apos;m not sure
                       </label>
@@ -285,15 +280,15 @@ export default function NewProposalForm() {
                         id="softwareDevelopment"
                         type="radio"
                         name="category"
-                        value="softDev"
+                        value="softwareDevelopment"
                         className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
                         onChange={(e) => {
-                          handleSoftDev(e);
+                          handleCategory(e);
                         }}
                       />
                       <label
-                        htmlFor="softDev"
-                        className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                        htmlFor="softwareDevelopment"
+                        className="block ms-2 text-sm font-light text-gray-900 dark:text-gray-300"
                       >
                         Software Development
                       </label>
@@ -304,15 +299,15 @@ export default function NewProposalForm() {
                         id="digitalMarketing"
                         type="radio"
                         name="category"
-                        value="digMark"
+                        value="digitalMarketing"
                         className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
                         onChange={(e) => {
-                          handleDigMark(e);
+                          handleCategory(e);
                         }}
                       />
                       <label
-                        htmlFor="digMark"
-                        className="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300"
+                        htmlFor="digitalMarketing"
+                        className="block ms-2  text-sm font-light text-gray-900 dark:text-gray-300"
                       >
                         Digital Marketing
                       </label>
@@ -320,18 +315,18 @@ export default function NewProposalForm() {
 
                     <div className="flex items-center mb-4">
                       <input
-                        id="dataAnalysis"
+                        id="dataAnalytics"
                         type="radio"
                         name="category"
-                        value="datAn"
+                        value="dataAnalytics"
                         className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
                         onChange={(e) => {
-                          handleDatAn(e);
+                          handleCategory(e);
                         }}
                       />
                       <label
-                        htmlFor="datAn"
-                        className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                        htmlFor="dataAnalytics"
+                        className="block ms-2 text-sm font-light text-gray-900 dark:text-gray-300"
                       >
                         Data Analytics
                       </label>
@@ -345,12 +340,12 @@ export default function NewProposalForm() {
                         value="uxUi"
                         className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:bg-gray-700 dark:border-gray-600"
                         onChange={(e) => {
-                          handleUxUi(e);
+                          handleCategory(e);
                         }}
                       />
                       <label
                         htmlFor="uxUi"
-                        className="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                        className="block ms-2 text-sm font-light text-gray-900 dark:text-gray-300"
                       >
                         UX/UI
                       </label>
@@ -442,10 +437,10 @@ export default function NewProposalForm() {
                     htmlFor="Company website"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    The best contact for this proposal (enter a phone number or
-                    email)
+                    The best contact for this proposal (enter a valid email)
                   </label>
                   <input
+                  type="email"
                     name="contact"
                     id="contact"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -466,9 +461,7 @@ export default function NewProposalForm() {
                     style={{
                       display: "inline-flex",
                       backgroundColor: "#ff532f",
-                      color: "black",
-                      // borderRadius: "8px",
-                      // padding: "4px",
+                      color: "black"
                     }}
                     className="focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100"
                   >
