@@ -8,7 +8,6 @@ const proposalSchema = new mongoose.Schema({
     website: {
         type: String
     },
-    // Seeing if project is in progress
     projectStarted: {
         type: Boolean,
         default: false
@@ -34,60 +33,22 @@ const proposalSchema = new mongoose.Schema({
         required: true
     },
     category: {
-        type: Boolean,
+        type: String,
         default: false
     }, 
-    categorySoftwareDevelopment: {
-        type: Boolean,
-        default: false
-    },
-    categoryDataAnalytics: {
-        type: Boolean,
-        default: false
-    },
-    categoryDigitalMarketing: {
-        type: Boolean,
-        default: false
-    },
-    categoryUxUi: {
-        type: Boolean,
-        default: false
-    },
     read: {
         type: Boolean,
         required: true,
         default: false
     }, 
-    // Project Status
+    updated: {
+        type: Boolean,
+        default: false
+    },
     status: {
         type: String,
         required: true
     },
-    // approvedStatus: {
-    //     type: Boolean,
-    //     required: true,
-    //     default: false
-    // },
-    // underReviewStatus: {
-    //     type: Boolean,
-    //     required: true,
-    //     default: false
-    // }, 
-    // submittedStatus: {
-    //     type: Boolean,
-    //     required: true,
-    //     default: true
-    // },
-    // deniedStatus: {
-    //     type: Boolean,
-    //     required: true,
-    //     default: false
-    // },
-    // ongoingStatus: {
-    //     type: Boolean,
-    //     required: true,
-    //     default: false
-    // },
     owner: {
         type: String,
         requried: true
