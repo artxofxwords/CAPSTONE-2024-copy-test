@@ -50,7 +50,7 @@ export default function Nav() {
       style={{
         // width: "screen",
         height: "10vh",
-        backgroundColor: "#25394f",
+        backgroundColor: "#1b3b50",
         alignContent: "center",
       }}
     >
@@ -86,7 +86,7 @@ export default function Nav() {
             style={{
               display: "inline-flex",
               backgroundColor: "unset",
-              color: "black",
+              color: "white",
               // borderRadius: "8px",
               width: "8px",
             }}
@@ -98,7 +98,7 @@ export default function Nav() {
             style={{
               display: "inline-flex",
               backgroundColor: "#ff532f",
-              color: "black",
+              color: "white",
               // borderRadius: "8px",
               // padding: "4px",
             }}
@@ -114,7 +114,7 @@ export default function Nav() {
               style={{
                 display: "inline-flex",
                 backgroundColor: "#ff532f",
-                color: "black",
+                color: "white",
                 // borderRadius: "8px",
                 // padding: "4px",
               }}
@@ -130,7 +130,7 @@ export default function Nav() {
             style={{
               display: "inline-flex",
               backgroundColor: "#ff532f",
-              color: "black",
+              color: "white",
               // borderRadius: "8px",
               // padding: "4px",
             }}
@@ -147,7 +147,7 @@ export default function Nav() {
                 style={{
                   display: "inline-flex",
                   backgroundColor: "#ff532f",
-                  color: "black",
+                  color: "white",
                   // borderRadius: "8px",
                   // padding: "4px",
                 }}
@@ -162,7 +162,7 @@ export default function Nav() {
                 style={{
                   display: "inline-flex",
                   backgroundColor: "#ff532f",
-                  color: "black",
+                  color: "white",
                   // borderRadius: "8px",
                   // padding: "4px",
                 }}
@@ -181,7 +181,7 @@ export default function Nav() {
                 style={{
                   display: "inline-flex",
                   backgroundColor: "#ff532f",
-                  color: "black",
+                  color: "white",
                   // borderRadius: "8px",
                   // padding: "4px",
                 }}

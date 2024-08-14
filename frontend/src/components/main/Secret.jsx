@@ -9,7 +9,7 @@ export default function Secret () {
                 width: "98vw",
                 height: "100vh",
                 border: "1px solid black",
-                backgroundColor: "#25394f"
+                backgroundColor: "#1b3b50"
             }}>
 
 <div id="default-carousel" className="relative w-full" data-carousel="slide">
@@ -17,23 +17,23 @@ export default function Secret () {
     <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
         
         <div className="hidden duration-700 ease-in-out" data-carousel-item="active">
-            <img src="insert image of Sid here" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="First Sid"></img>
+            <img src="https://drive.google.com/file/d/1QRbQ6JfR7AGzAdPoCIizVFW_Lk-joYHS/view?usp=sharing" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="First Sid"></img>
         </div>
      
         <div className="hidden duration-700 ease-in-out" data-carousel-item="active">
-            <img src="insert image of Sid here" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="second Sid" />
+            <img src="https://drive.google.com/thumbnail?id=1aa8v1nsE-qFsyt1-bbCsT6Kr0P3tr1gR&sz=w1000" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="second Sid" />
         </div>
        
         <div className="hidden duration-700 ease-in-out" data-carousel-item="active">
-            <img src="insert image of Sid here" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="third Sid" />
+            <img src="https://drive.google.com/thumbnail?id=1DniT8zLumWqCP8zF2vM50sLAmoPZiSsK&sz=w1000" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="third Sid" />
         </div>
         
         <div className="hidden duration-700 ease-in-out" data-carousel-item="active">
-            <img src="insert image of Sid here" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="fourth Sid" />
+            <img src="https://drive.google.com/thumbnail?id=1m49aTuFGB-Y8s6yZ09Oi_wDZCsuNZPiZ&sz=w1000" className="absolute block w-1000 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="fourth Sid" />
         </div>
         
         <div className="hidden duration-700 ease-in-out" data-carousel-item="active">
-            <img src="insert image of Sid here" className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="fifth Sid" />
+            <img src="https://drive.google.com/thumbnail?id=1DniT8zLumWqCP8zF2vM50sLAmoPZiSsK&sz=w1000" className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="fifth Sid" />
         </div>
     </div>
     

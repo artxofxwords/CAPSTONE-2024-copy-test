@@ -120,6 +120,7 @@ export default function AllUsersDrawer({ userInfo }) {
         See All Registered Users
       </Button>
 
+
       <Drawer
         open={isOpen}
         onClose={handleClose}
