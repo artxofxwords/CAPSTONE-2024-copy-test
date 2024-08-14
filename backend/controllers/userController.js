@@ -1,12 +1,15 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const nodemailer = require("nodemailer");
 require("dotenv").config();
+
 
 // Login user controller
 exports.loginUser = async (req, res) => {
   const password = req.body.password;
   const username = req.body.username;
+
 
   const userFound = await User.findOne({ username: username });
 
@@ -80,6 +83,53 @@ exports.registerUser = async (req, res) => {
   });
 };
 
+exports.forgotPassword = async (req, res) => {
+  try {
+    //find the user by email
+    const user = await User.findOne({email: req.body.email });
+
+    //if user not found, send error message
+    if (!user) {
+      return res.status(404).send({message: "User not found"});
+    }
+
+    //Generate a unique JWT token for the user that contains the user's id
+    const token = jwt.sign({userId: user._id }, process.env.SECRET_KEY, {expiresIn: "10m",});
+
+    //send the token to the user's email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+        auth: {
+          user: "uprightcapstone@gmail.com",
+          pass: "nfdthiwrutgrubze",
+        },
+        tls : {rejectUnauthorized: false}
+    });
+
+    //Email configuration
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: req.body.email,
+      subject: "ResetPassword",
+      html: `<h1>Reset Your Password</h1>
+      <p>Click on the following link to reset your password:<p>
+      <a href="http://localhost:5173/resetPassword/?token=${token}">http://locakhost:5173/resetPassword/?token=${token}</a>
+      <p>The link will expire in 10 minutes.<p>
+      <p>If you didn't request a password reset, please nofity an addministator.<p>`,
+    };
+
+    //Send the email
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        return res.status(500).send({message: err.message});
+      }
+      res.status(200).send({message: "Email sent"});
+    });
+  } catch (err) {
+    res.status(500).send({message: err.message});
+  }
+};
+
 // delete user controller
 exports.deleteUser = async (req, res) => {
   if (req.user.isAdmin || req.user._id === req.params._id) {
@@ -93,6 +143,41 @@ exports.deleteUser = async (req, res) => {
 } else {
   res.status(400).json("You do not have authorization to delete this user.");
 }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    //Verify the token sent by the user
+    const decodedToken = jwt.verify(
+      req.body.token,
+      process.env.SECRET_KEY
+    );
+
+    //If the token is invalid, return an error
+    if (!decodedToken) {
+      return res.status(401).send({message: "Invalid token"});
+    }
+
+    //find the user with the id from the token
+    const user = await User.findOne({_id: decodedToken.userId });
+    if (!user) {
+      return res.status(401).send({message: "no user found"});
+    }
+
+    //has the new password
+    const salt = await bcrypt.genSalt(10);
+    req.body.newPassword = await bcrypt.hash(req.body.newPassword, salt);
+
+    //Update user's password, clear reset token and expiration time
+    user.password = req.body.newPassword;
+    await user.save();
+
+    //Send success response
+    res.status(201).send({message: "Password updated" });
+  } catch (err) {
+    //Send error response if any error occurs
+    res.status(500).send({message: err.message});
+  }
 };
 
 // update user controller

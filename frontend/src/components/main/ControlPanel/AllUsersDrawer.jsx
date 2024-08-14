@@ -107,7 +107,7 @@ export default function AllUsersDrawer({ userInfo }) {
       </Button>
 
       <Drawer open={isOpen} onClose={handleClose} style={{
-        backgroundColor: "#25394f"
+        backgroundColor: "#1b3b50"
       }}
     >
         <Drawer.Header title="" style={{color: "white"}}/>

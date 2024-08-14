@@ -1,6 +1,6 @@
 import Nav from "./Nav.jsx";
 import { Button } from "flowbite-react";
-import uprightLogo from "../../assets/PoweredByUpright.png";
+import uprightLogo from "../../assets/PoweredByUpright4.png";
 
 export default function Header() {
   return (
@@ -8,7 +8,6 @@ export default function Header() {
       style={{
         display: "inline-flex",
         flexDirection: "column",
-        // width: "100vw",
       }}
     >
       <Nav />
@@ -17,7 +16,7 @@ export default function Header() {
           display: "inline-flex",
           justifyContent: "center",
           flexDirection: "row",
-          backgroundColor: "#25394f",
+          backgroundColor: "#1b3b50",
           height: "auto",
           paddingTop: "25px",
           paddingBottom: "25px",
@@ -84,8 +83,8 @@ export default function Header() {
           }}
         >
           <img
-            width="400px"
-            height="400px"
+            width="300px"
+            height="300px"
             src={uprightLogo}
             alt="uprightLogo"
           ></img>

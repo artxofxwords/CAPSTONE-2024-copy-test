@@ -60,6 +60,7 @@ export default function Login() {
       <div
         style={{
           backgroundColor: "#1b3b50",
+          color: "white",
           alignContent: "center",
           paddingTop: "20vh",
           paddingBottom: "34vh",
@@ -67,12 +68,12 @@ export default function Login() {
       >
         <form onSubmit={handleAccountLogin} className="max-w-sm mx-auto">
           <div className="mb-5">
-            <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-black-900 md:text-5xl lg:text-6xl dark:text-white">
+            <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white-900 md:text-5xl lg:text-6xl dark:text-white">
               Login
             </h1>
             <label
               htmlFor="username"
-              className="block mb-2 text-sm font-medium text-black-900 dark:text-orange"
+              className="block mb-2 text-sm font-medium text-white-900 dark:text-white"
             >
               Username
             </label>
@@ -86,7 +87,7 @@ export default function Login() {
           <div className="mb-5">
             <label
               htmlFor="password"
-              className="block mb-2 text-sm font-medium text-black-900 dark:text-orange"
+              className="block mb-2 text-sm font-medium text-white-900 dark:text-orange"
             >
               Password
             </label>
@@ -114,6 +115,14 @@ export default function Login() {
             className="font-medium text-primary-600 hover:underline dark:text-primary-500"
           >
             Register here
+          </a>
+        </p>
+        <p className="text-center text-sm font-light text-orange-500 dark:text-orange-400">
+          <a
+            href="/forgotPassword"
+            className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+          >
+            Forgot your password?
           </a>
         </p>
       </div>
