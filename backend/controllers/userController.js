@@ -13,8 +13,15 @@ exports.loginUser = async (req, res) => {
 
   const userFound = await User.findOne({ username: username });
 
-  const hashedPasswordFromUser = userFound.password;
+  if (!userFound) {
+    res.status(301).json("User not created")
+    console.log("User not created")
+    return;
+  }
 
+  const hashedPasswordFromUser = userFound.password;
+  
+  
   bcrypt.compare(password, hashedPasswordFromUser, (err, result) => {
     if (result) {
       const payload = {
@@ -213,7 +220,6 @@ exports.updateUser = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
   try {
     const data = await User.find({});
-    console.log("User:", data);
 
     res.status(200).json(data);
   } catch (err) {

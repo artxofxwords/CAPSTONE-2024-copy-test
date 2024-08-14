@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
@@ -10,6 +11,7 @@ import AssignAdminModal from "./ControlPanel/AssignAdminModal";
 import PropByCatAccordion from "./ControlPanel/PropByCatAccordion";
 import MarkAsReadButton from "./ControlPanel/MarkAsReadButton";
 import DeleteProposalModal from "./ControlPanel/DeleteProposalModal";
+import Error500 from "../../modals/Error500";
 
 export default function ControlPanel() {
   const yourJwtToken = localStorage.getItem("jwtToken");
@@ -22,24 +24,17 @@ export default function ControlPanel() {
   const [allProposals, setAllProposals] = useState([]); //list of all proposals from database
   const [unreadProposals, setUnreadProposals] = useState([]); //list of all unread proposals based on "read = true or false"
   const [priorityProposals, setPriorityProposals] = useState([]); //list of top five proposals sorted by sponser availability date
+  const [updatedProposals, setUpdatedProposals] = useState([]); //list of user updated proposals
 
   const [currentProposal, setCurrentProposal] = useState(); //clicked proposal, fetches by id to display details
   const [currentProposalOwnerInfo, setCurrentProposalOwnerInfo] = useState([]); //sponsor info for selected proposal
-  // const [currentCategory, setCurrentCategory] = useState();
-  // const [currentStatus, setCurrentStatus] = useState();
 
-  const [categorySoftDev, setCategorySoftDev] = useState(false);
-  const [categoryDigMark, setCategoryDigMark] = useState(false);
-  const [categoryDatAn, setCategoryDatAn] = useState(false);
-  const [categoryUxUi, setCategoryUxUi] = useState(false);
-  const [categoryAssigned, setCategoryAssigned] = useState(false);
-
+  const [category, setCategory] = useState("noCategory");
+  const [status, setStatus] = useState(); //proposal status submitted/ approved/ denied
   const [deleteProposal, setDeleteProposal] = useState(false); //shows delete proposal popup to confirm delete
 
-  const [status, setStatus] = useState(); //proposa status submitted/ approved/ denied
-  // const [statusOngoing, setStatusOngoing] = useState(false); //mark ongoing once contact made
-  // const [statusApproved, setStatusApproved] = useState(false); //mark approved once ready to assign to cohort
-  // const [statusDenied, setStatusDenied] = useState(false); //mark denied to remove from view
+  const [error500, setError500] = useState(false); //modal error message 
+  const [errorMessage, setErrorMessage] = useState(); //data from error (response.json)
 
   //useEffect functions
   useEffect(() => {
@@ -53,6 +48,7 @@ export default function ControlPanel() {
   useEffect(() => {
     allUnreadProposals(); //rerenders unread list
     sortProposalsByPriority(); //rerenders priority list
+    allUpdatedProposals(); //rerenders updated proposals list
   }, [allProposals]);
 
   useEffect(() => {
@@ -98,15 +94,35 @@ export default function ControlPanel() {
     }
   }
 
+  const activeProposals = [];
   //fetch list of proposals sorted by available date
   async function sortProposalsByPriority() {
-    const sortedProposals = allProposals.sort(
+    for (const proposal of allProposals) {
+      if (proposal.status === "submitted" || proposal.status === "approved") {
+        activeProposals.push(proposal);
+      }
+    }
+    console.log("active proposals:", activeProposals);
+    const sortedProposals = activeProposals.sort(
       (a, b) => new Date(a.availabilityStart) - new Date(b.availabilityStart)
     );
 
     sortedProposals.splice(5);
 
     setPriorityProposals(sortedProposals);
+  }
+
+  //display proposals that have been updated by user/owner
+  async function allUpdatedProposals() {
+    const updatedProposalsFound = [];
+
+    for (const proposal of allProposals) {
+      if (proposal.updated) {
+        updatedProposalsFound.push(proposal);
+      }
+    }
+
+    setUpdatedProposals(updatedProposalsFound);
   }
 
   //onClick of any project in various lists, proposal appears in 'Project Detail View' with project details
@@ -132,20 +148,6 @@ export default function ControlPanel() {
     } else {
       projectInProgress = <span>Project is not started.</span>;
     }
-
-    currentProposalStatus();
-  }
-
-  function currentProposalStatus() {
-    if (currentProposal.status === "submitted") {
-      setStatus("Submitted");
-    }
-    if (currentProposal.status === "approved") {
-      setStatus("Approved");
-    }
-    if (currentProposal.status === "denied") {
-      setStatus("Denied");
-    }
   }
 
   //pulls info of sponser who submitted proposal through owner id
@@ -161,40 +163,17 @@ export default function ControlPanel() {
     setCurrentProposalOwnerInfo(data);
   }
 
-  //function for state variables to hold category assignment until "save changes"
-  function handleCategorySoftwareDevelopment(e) {
+  function handleCategory(e) {
     e.preventDefault();
-    setCategorySoftDev(!categorySoftDev);
-    setCategoryAssigned(true);
-  }
 
-  function handleCategoryDigitalMarketing(e) {
-    e.preventDefault();
-    setCategoryDigMark(!categoryDigMark);
-    setCategoryAssigned(true);
-  }
-
-  function handleCategoryDataAnalytics(e) {
-    e.preventDefault();
-    setCategoryDatAn(!categoryDatAn);
-    setCategoryAssigned(true);
-  }
-
-  function handleCategoryUxUi(e) {
-    e.preventDefault();
-    setCategoryUxUi(!categoryUxUi);
-    setCategoryAssigned(true);
+    setCategory(e.target.value);
   }
 
   //functions for state variables to hold admin selections until "save changes" is clicked for put request
-  function handleStatusApproved(e) {
+  function handleStatus(e) {
     e.preventDefault();
-    setStatus("approved");
-  }
 
-  function handleStatusDenied(e) {
-    e.preventDefault();
-    setStatus("denied");
+    setStatus(e.target.value);
   }
 
   //handles admin saving all state variables to database
@@ -204,11 +183,7 @@ export default function ControlPanel() {
     const body = {
       _id: userInfo._id,
       isAdmin: userInfo.isAdmin,
-      category: categoryAssigned,
-      categorySoftwareDevelopment: categorySoftDev,
-      categoryDigitalMarketing: categoryDigMark,
-      categoryDataAnalytics: categoryDatAn,
-      categoryUxUi: categoryUxUi,
+      category: category,
       status: status,
     };
 
@@ -225,10 +200,14 @@ export default function ControlPanel() {
     );
 
     const data = await response.json();
-    console.log("Proposal has been updated:", data);
+    
+    if (response.status === 500) {
+      setError500(true);
+      setErrorMessage(data);
+    }
 
     getAllProposals();
-    currentProposalStatus();
+    setCurrentProposal(null);
   }
 
   return (
@@ -271,12 +250,6 @@ export default function ControlPanel() {
           <AllProposalsModal handleProposalClick={handleProposalClick} />
 
           <AssignAdminModal />
-
-          <span
-            style={{ fontSize: "1.2em", color: "#ddd5d0", marginLeft: "5vw" }}
-          >
-            Hello, {userInfo.firstName}
-          </span>
         </div>
         <div style={{ display: "inline-flex" }}>
           <div
@@ -311,11 +284,16 @@ export default function ControlPanel() {
                       onClick={(e) => {
                         handleProposalClick(e, proposal);
                       }}
-                      // style={{}}
+                      style={{ display: "flex" }}
                       className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
                     >
-                      <span className="inline-flex w-3 h-3 me-3 bg-yellow-300 rounded-full"></span>
-                      <a href="#">{proposal.companyName}</a>
+                      <span
+                        style={{ marginRight: "auto" }}
+                        className="inline-flex w-3 h-3 me-3 bg-yellow-300 rounded-full"
+                      ></span>
+                      <a style={{ marginLeft: "auto" }} href="#">
+                        {proposal.companyName}
+                      </a>
                     </li>
                   ))}
                 </ul>
@@ -338,10 +316,43 @@ export default function ControlPanel() {
                       onClick={(e) => {
                         handleProposalClick(e, proposal);
                       }}
+                      style={{ display: "flex" }}
                       className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
                     >
-                      <a href="#">
-                        {proposal.companyName} - {proposal.availabilityStart}
+                      <a href="#" style={{ marginRight: "auto" }}>
+                        {proposal.companyName}
+                      </a>
+                      <span style={{ marginLeft: "auto" }}>
+                        {proposal.availabilityStart}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: "inline-flex",
+              }}
+            >
+              <div className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-200">
+                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
+                  Recently Updated
+                </h5>
+
+                <ul className="w-98 text-med font-bold text-gray-900 bg-white border border-gray-200 rounded-lg">
+                  {updatedProposals?.map((proposal) => (
+                    <li
+                      key={proposal._id}
+                      onClick={(e) => {
+                        handleProposalClick(e, proposal);
+                      }}
+                      style={{ display: "flex" }}
+                      className="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg"
+                    >
+                      <a style={{ marginLeft: "auto" }} href="#">
+                        {proposal.companyName}
                       </a>
                     </li>
                   ))}
@@ -355,10 +366,7 @@ export default function ControlPanel() {
                 width: "30vw",
               }}
             >
-              <PropByCatAccordion
-                allProposals={allProposals}
-                handleProposalClick={handleProposalClick}
-              />
+              <PropByCatAccordion handleProposalClick={handleProposalClick} />
             </div>
           </div>
         </div>
@@ -403,11 +411,11 @@ export default function ControlPanel() {
               <div
                 style={{
                   display: "inline-flex",
-                  // justifyContent: "space-around",
                   alignItems: "baseline",
                 }}
               >
                 <h1
+                  id="current"
                   style={{ marginRight: "2vw", color: "ff532f" }}
                   className="mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl lg:text-6xl"
                 >
@@ -418,7 +426,6 @@ export default function ControlPanel() {
                     display: "flex",
                     flexDirection: "row",
                     alignContent: "baseline",
-                    // marginLeft: "40px",
                   }}
                 >
                   <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">
@@ -479,68 +486,83 @@ export default function ControlPanel() {
                     <legend className="mb-4">Set Proposal Category</legend>
                     <div className="flex items-center gap-2">
                       <Radio
-                        id="category"
+                        id="noCategory"
                         name="category"
-                        value="category"
-                        defaultChecked
+                        value="noCategory"
+                        defaultChecked={
+                          currentProposal.category === "noCategory"
+                            ? true
+                            : false
+                        }
                       />
-                      <Label htmlFor="category">No Category</Label>
+                      <Label htmlFor="noCategory">No Category</Label>
                     </div>
                     <div className="flex items-center gap-2">
                       <Radio
-                        id="categorySoftwareDevelopment"
+                        id="softwareDevelopment"
                         name="category"
-                        value="categorySoftwareDevelopment"
+                        value="softwareDevelopment"
                         onChange={(e) => {
-                          handleCategorySoftwareDevelopment(e);
+                          handleCategory(e);
                         }}
+                        defaultChecked={
+                          currentProposal.category === "softwareDevelopment"
+                            ? true
+                            : false
+                        }
                       />
-                      <Label htmlFor="categorySoftwareDevelopment">
+                      <Label htmlFor="softwareDevelopment">
                         Software Development
                       </Label>
                     </div>
                     <div className="flex items-center gap-2">
                       <Radio
-                        id="categoryDataAnalytics"
+                        id="dataAnalytics"
                         name="category"
-                        value="categoryDataAnalytics"
+                        value="dataAnalytics"
                         onChange={(e) => {
-                          handleCategoryDataAnalytics(e);
+                          handleCategory(e);
                         }}
+                        defaultChecked={
+                          currentProposal.category === "dataAnalytics"
+                            ? true
+                            : false
+                        }
                       />
-                      <Label htmlFor="categoryDataAnalytics">
-                        Data Analytics
-                      </Label>
+                      <Label htmlFor="dataAnalytics">Data Analytics</Label>
                     </div>
                     <div className="flex items-center gap-2">
                       <Radio
-                        id="categoryDigitalMarketing"
+                        id="digitalMarketing"
                         name="category"
-                        value="categoryDigitalMarketing"
+                        value="digitalMarketing"
                         onChange={(e) => {
-                          handleCategoryDigitalMarketing(e);
+                          handleCategory(e);
                         }}
+                        defaultChecked={
+                          currentProposal.category === "digitalMarketing"
+                            ? true
+                            : false
+                        }
                       />
-                      <Label htmlFor="categoryDigitalMarketing">
+                      <Label htmlFor="digitalMarketing">
                         Digital Marketing
                       </Label>
                     </div>
                     <div className="flex items-center gap-2">
                       <Radio
-                        id="categoryUxUi"
+                        id="uxUi"
                         name="category"
-                        value="categoryUxUi"
+                        value="uxUi"
                         onChange={(e) => {
-                          handleCategoryUxUi(e);
+                          handleCategory(e);
                         }}
+                        defaultChecked={
+                          currentProposal.category === "uxUi" ? true : false
+                        }
                       />
-                      <Label htmlFor="categoryUxUi">UX/UI</Label>
+                      <Label htmlFor="uxUi">UX/UI</Label>
                     </div>
-                    {/* <p>
-                      <h6 className="text-xs">
-                        <i>Current category is {currentCategory}</i>
-                      </h6>
-                    </p> */}
                   </fieldset>
 
                   <fieldset className="inline-flex max-w-md flex-col gap-4">
@@ -550,38 +572,44 @@ export default function ControlPanel() {
                         id="submitted"
                         name="status"
                         value="submitted"
-                        defaultChecked
+                        onChange={(e) => {
+                          handleStatus(e);
+                        }}
+                        defaultChecked={
+                          currentProposal.status === "submitted" ? true : false
+                        }
                       />
                       <Label htmlFor="submitted">Submitted</Label>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <Radio
-                        id="approvedStatus"
+                        id="approved"
                         name="status"
-                        value="approvedStatus"
+                        value="approved"
                         onChange={(e) => {
-                          handleStatusApproved(e);
+                          handleStatus(e);
                         }}
+                        defaultChecked={
+                          currentProposal.status === "approved" ? true : false
+                        }
                       />
-                      <Label htmlFor="approvedStatus">Approved</Label>
+                      <Label htmlFor="approved">Approved</Label>
                     </div>
                     <div className="flex items-center gap-2">
                       <Radio
-                        id="deniedStatus"
+                        id="denied"
                         name="status"
-                        value="deniedStatus"
+                        value="denied"
                         onChange={(e) => {
-                          handleStatusDenied(e);
+                          handleStatus(e);
                         }}
+                        defaultChecked={
+                          currentProposal.status === "denied" ? true : false
+                        }
                       />
-                      <Label htmlFor="deniedStatus">Denied</Label>
+                      <Label htmlFor="denied">Denied</Label>
                     </div>
-                    <p>
-                      <h6 className="text-xs">
-                        <i>Current status is {status}</i>
-                      </h6>
-                    </p>
                   </fieldset>
                 </div>
               </div>
@@ -652,6 +680,7 @@ export default function ControlPanel() {
           </div>
         )}
       </div>
+      <Error500 error500={error500} setError500={setError500} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
     </div>
   );
 }

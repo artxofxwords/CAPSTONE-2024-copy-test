@@ -37,12 +37,9 @@ exports.createProposal = async (req, res) => {
     contact,
     owner,
     category,
-    categorySoftwareDevelopment,
-    categoryDataAnalytics,
-    categoryDigitalMarketing,
-    categoryUxUi,
     status,
-    read
+    read,
+    updated
   } = req.body;
 
   try {
@@ -57,12 +54,9 @@ exports.createProposal = async (req, res) => {
       contact: contact,
       owner: owner,
       category: category,
-      categorySoftwareDevelopment: categorySoftwareDevelopment,
-      categoryDataAnalytics: categoryDataAnalytics,
-      categoryDigitalMarketing: categoryDigitalMarketing,
-      categoryUxUi: categoryUxUi,
       status: status,
-      read: read
+      read: read,
+      updated: updated
     });
 
     const data = await newProposal.save();
@@ -80,7 +74,7 @@ exports.createProposal = async (req, res) => {
 
 exports.sendProposal = (req, res) => {
   const output = `
-    <p>You have a new proposal submitted.</p>
+    <p>A new proposal has been submitted.</p>
     <h3>Proposal Info:</h3>
     <ul>
     <li>Company: ${req.body.companyName}</li>
@@ -148,12 +142,9 @@ exports.updateProposal = async (req, res) => {
         contact: req.body.contact,
         owner: req.body.owner,
         category: req.body.category,
-        categorySoftwareDevelopment: req.body.categorySoftwareDevelopment,
-        categoryDataAnalytics: req.body.categoryDataAnalytics,
-        categoryDigitalMarketing: req.body.categoryDigitalMarketing,
-        categoryUxUi: req.body.categoryUxUi,
         read: req.body.read,
         status: req.body.status,
+        updated: req.body.updated
       };
 
       const data = await Proposal.findOneAndUpdate(

@@ -8,13 +8,13 @@ export default function Proposal() {
     <>
       <Nav />
 
-      <div style={{ display: "flex", flexDirection: "row"}}>
+      <div style={{ display: "flex", flexDirection: "row" }}>
         <div
-          style={{ display: "flex", flexDirection: "column", width: "60vw" }}
+          style={{ display: "flex", flexDirection: "column", width: "70vw" }}
         >
           <h1
             style={{
-              textAlign: "center",
+              marginLeft: "5vw",
               fontSize: "2em",
             }}
           >
@@ -28,15 +28,15 @@ export default function Proposal() {
           style={{
             display: "flex",
             flexDirection: "column",
-            width: "40vw",
+            width: "30vw",
           }}
         >
           <h1
             style={{
-              fontSize: "2em"
+              fontSize: "2em",
             }}
           >
-            View the status of your proposal(s)
+            View / Update Proposal(s)
           </h1>
 
           <ProposalStatus />

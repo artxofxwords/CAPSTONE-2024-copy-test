@@ -8,17 +8,22 @@ export default function AllUsersDrawer({ userInfo }) {
   const userData = userInfo;
 
   let usersError;
-  let thisUserIsAdmin;
 
   const [isOpen, setIsOpen] = useState(false); //for user info drawer
   const [allUsers, setAllUsers] = useState([]); //list of all users for admin only
   const [viewUser, setViewUser] = useState(false); //show or hide view user modal
   const [deleteUser, setDeleteUser] = useState(false); //show or hide delete user confirmation modal
   const [thisUser, setThisUser] = useState([]); //this selected user from map method
+  const [userProposals, setUserProposals] = useState([]); //selected user list of submitted proposals
+  const [userProposalsLoaded, setUserProposalsLoaded] = useState(false);
 
   useEffect(() => {
     getAllUsers(); //stays on top of changing users list
   }, []);
+
+  useEffect(() => {
+    userProposalsFound(); //loads user's proposals for modal
+  }, [thisUser]);
 
   //fetches all registered users
   async function getAllUsers() {
@@ -57,10 +62,20 @@ export default function AllUsersDrawer({ userInfo }) {
     setThisUser(userClicked);
   }
 
-  if (thisUser.isAdmin) {
-    thisUserIsAdmin = <p>User is admin.</p>
-  } else {
-    thisUserIsAdmin = <p>User is not admin.</p>
+  async function userProposalsFound() {
+    const owner = thisUser._id;
+    console.log("this user id:", thisUser._id);
+
+    const response = await fetch(
+      `http://localhost:3000/proposals/displayUserProposal/${owner}`
+    );
+
+    const data = await response.json();
+
+    const userProposalsList = data.map((item) => item.companyName);
+    setUserProposals(userProposalsList);
+
+    setUserProposalsLoaded(true);
   }
 
   async function handleDeleteUser(e) {
@@ -72,17 +87,14 @@ export default function AllUsersDrawer({ userInfo }) {
       isAdmin: userData.isAdmin,
     };
 
-    const response = await fetch(
-      `http://localhost:3000/users/${_id}`,
-      {
-        method: "DELETE",
-        body: JSON.stringify(body),
-        headers: {
-          "Content-type": "application/json",
-          Authorization: {yourJwtToken}
-        },
-      }
-    );
+    const response = await fetch(`http://localhost:3000/users/${_id}`, {
+      method: "DELETE",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-type": "application/json",
+        Authorization: { yourJwtToken },
+      },
+    });
 
     const data = await response.json();
     console.log("Deleted user status: ", data);
@@ -93,24 +105,30 @@ export default function AllUsersDrawer({ userInfo }) {
   return (
     <>
       <Button
-      size="xs"
-      style={{
-        display: "inline-flex",
-        backgroundColor: "#1b3b50",
-        color: "#ddd5d0",
-        borderRadius: "8px",
-        padding: "3px",
-        marginTop: "3px"
-      }} onClick={() => setIsOpen(true)}
-      className="focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100">
+        size="xs"
+        style={{
+          display: "inline-flex",
+          backgroundColor: "#1b3b50",
+          color: "#ddd5d0",
+          borderRadius: "8px",
+          padding: "3px",
+          marginTop: "3px",
+        }}
+        onClick={() => setIsOpen(true)}
+        className="focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100"
+      >
         See All Registered Users
       </Button>
 
-      <Drawer open={isOpen} onClose={handleClose} style={{
-        backgroundColor: "#1b3b50"
-      }}
-    >
-        <Drawer.Header title="" style={{color: "white"}}/>
+
+      <Drawer
+        open={isOpen}
+        onClose={handleClose}
+        style={{
+          backgroundColor: "#25394f",
+        }}
+      >
+        <Drawer.Header title="" style={{ color: "white" }} />
         <Drawer.Items>
           <p className="mb-6 text-sm text-white dark:text-gray-400">
             Current Registered Users
@@ -172,7 +190,7 @@ export default function AllUsersDrawer({ userInfo }) {
                       viewBox="0 0 24 24"
                     >
                       <path
-                        stroke="currentColor"
+                        stroke="red"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth="2"
@@ -181,19 +199,61 @@ export default function AllUsersDrawer({ userInfo }) {
                     </svg>
                   </a>
                   {viewUser && (
-                    <div>
-                      <Modal show={viewUser} onClose={() => setViewUser(false)}>
+                    <div style={{ justifyContent: "start" }}>
+                      <Modal
+                        show={viewUser}
+                        onClose={() => setViewUser(false)}
+                        style={{
+                          height: "98vh",
+                        }}
+                      >
                         <Modal.Header>
                           {thisUser.firstName} {thisUser.lastName}
                         </Modal.Header>
                         <Modal.Body>
                           <div className="space-y-6">
-                            <p>Username {thisUser.username}</p>
-                            <p>Email {thisUser.email}</p>
-                            <p>City {thisUser.city}</p>
-                            <p>State {thisUser.state}</p>
-                            <p>Company {thisUser.companyName}</p>
-                            {thisUserIsAdmin}
+                            <h1 className="text-2xl font-extrabold dark:text-white">
+                              Username{" "}
+                              <small className="ms-2 font-semibold text-gray-500">
+                                {thisUser.username}
+                              </small>
+                            </h1>
+                            <h1 className="text-2xl font-extrabold dark:text-white">
+                              Email{" "}
+                              <small className="ms-2 font-semibold text-gray-500">
+                                {thisUser.email}
+                              </small>
+                            </h1>
+                            <h1 className="text-2xl font-extrabold dark:text-white">
+                              City{" "}
+                              <small className="ms-2 font-semibold text-gray-500">
+                                {thisUser.city}
+                              </small>
+                            </h1>
+                            <h1 className="text-2xl font-extrabold dark:text-white">
+                              State{" "}
+                              <small className="ms-2 font-semibold text-gray-500">
+                                {thisUser.state}
+                              </small>
+                            </h1>
+                            <h1 className="text-2xl font-extrabold dark:text-white">
+                              Company{" "}
+                              <small className="ms-2 font-semibold text-gray-500">
+                                {thisUser.companyName}
+                              </small>
+                            </h1>
+                            {userProposalsLoaded && (
+                            <h1 className="text-2xl font-extrabold dark:text-white">
+                              Proposals submitted:
+                              <small className="ms-2 font-semibold text-gray-500">
+                                <ul>
+                                  {userProposals?.map((item) => (
+                                    <li key={item}>{item}</li>
+                                  ))}
+                                </ul>
+                              </small>
+                            </h1>
+                            )}
                           </div>
                         </Modal.Body>
                       </Modal>
@@ -210,8 +270,8 @@ export default function AllUsersDrawer({ userInfo }) {
                         <Modal.Body>
                           <div className="space-y-6">
                             <p className="text-base leading-relaxed text-gray-500">
-                              Are you sure you want to delete {thisUser.firstName}{" "}
-                              {thisUser.lastName}?
+                              Are you sure you want to delete{" "}
+                              {thisUser.firstName} {thisUser.lastName}?
                             </p>
                             <p className="text-base leading-relaxed text-gray-500">
                               Action cannot be undone. This will delete the user

@@ -63,6 +63,7 @@ export default function Nav() {
           }}
         >
           <img
+          onClick={()=>{navigate("/")}}
             width="100px"
             height="100px"
             src="https://cdn.prod.website-files.com/64921323294d7b037da1a52c/649b14c49b4e1c2fd060f3f2_Upright-logo.svg"
