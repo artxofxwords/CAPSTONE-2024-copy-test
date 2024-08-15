@@ -36,7 +36,7 @@ Uses gitpages (module) and netlify (host)
 3. Once local branch is up to date, test develop01 from `locahost:3000` for full functionality
 4. If the update runs perfectly from develop01 localhost, push and merge _develop01_ to prod in github
 5. Open _prod_ locally in vscode and `git pull`
-6. Once local branch is up to date, `npm run deploy` from _prod_
+6. Once local branch is up to date, `npm run deploy` from _prod_ frontend directory
 >The live site is updated!
 
 ### BACKEND
