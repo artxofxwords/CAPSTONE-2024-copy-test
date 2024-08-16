@@ -30,14 +30,14 @@ git push --set-upstream origin [thisbranchname]
 
 ## Instructions for deployment
 ### FRONTEND
-Uses gitpages (module) and netlify (host)
+Uses gitpages (module) and netlify ([host](https://uprightcapstone.netlify.app/))
 1. Push and merge all updates to _develop01_ branch in github
 2. Open _develop01_ branch locally in vscode and `git pull`
-3. Once local branch is up to date, test develop01 from `locahost:3000` for full functionality
+3. Once local branch is up to date, test develop01 from `localhost:3000` for full functionality
 4. If the update runs perfectly from develop01 localhost, push and merge _develop01_ to prod in github
 5. Open _prod_ locally in vscode and `git pull`
 6. Once local branch is up to date, `npm run deploy` from _prod_ frontend directory
->The live site is updated!
+>The live client site is updated!
 
 ### BACKEND
-Uses render (host)
+Uses render ([host](https://capstone-2024-ppe0.onrender.com/))
